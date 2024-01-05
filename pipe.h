@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/shm.h> 
 
 #ifndef NETWORKING_H
 #define NETWORKING_H

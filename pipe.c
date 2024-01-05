@@ -97,6 +97,16 @@ int client_handshake(int *to_server) {
   printf("Client sending ACK\n");
   write(wkp, ACK, 50);
   
+
+//user input to ask for a char
+//read shared memory and find where if any, letter is right
+//edit process function to cover all except that one letter
+//use process function
+//print result from process function and add to shared memory
+
+
+
+
   char code_word[50];
   char modified_word[50];
   read(from_server, code_word, 50);
@@ -129,9 +139,21 @@ int server_connect(int from_client) {
   printf("Server received ACK, handshake complete\n");
   
   char* code_word = "hello its me";
-  //char modified_word[50];
-  write(to_client, code_word, 50);
-  //read(from_client, modified_word, 50);
+
+//add word to shared memory
+//create shared memory
+int shmid;
+shmid = shmget(2727980, sizeof(char*), IPC_CREAT | 0640);  
+
+char *data;
+data = shmat(shmid, 0, 0);//attach it to variable data
+*data = *code_word;
+
+//write dashes to client
+write(to_client, process(code_word), 50);
+
+//server print dashes
+printf("Word: %s\n", process(code_word));
 
   return to_client;
 }
