@@ -97,21 +97,33 @@ int client_handshake(int *to_server) {
   printf("Client sending ACK\n");
   write(wkp, ACK, 50);
   
+  char code_word[50];
+  char modified_word[50];
+  read(from_server, code_word, 50);
+  // strcpy(modified_word,process(code_word));
+  // printf("%s\n",modified_word);
 
-//user input to ask for a char
+  //ask client to guess a character
+  printf("Guess a character:"); 
+  char line_buff[256];
+  fgets(line_buff,255,stdin);
+  char guessed = line_buff[0];
+  printf("guessed: %c\n", guessed);
+
 //read shared memory and find where if any, letter is right
+  char *data;
+  int shmid = shmget(2727980, 50, IPC_CREAT | 0640);
+  data = shmat(shmid, 0, 0);
+
+  printf("shared memory gave: %s\n", data);
+  printf("hello\n");
+
 //edit process function to cover all except that one letter
 //use process function
 //print result from process function and add to shared memory
 
 
-
-
-  char code_word[50];
-  char modified_word[50];
-  read(from_server, code_word, 50);
-  strcpy(modified_word,process(code_word));
-  printf("%s\n",modified_word);
+  
   //strcpy(modified_word, process(code_word));
   //write(wkp, modified_word, 50);
 
@@ -138,22 +150,33 @@ int server_connect(int from_client) {
 
   printf("Server received ACK, handshake complete\n");
   
-  char* code_word = "hello its me";
+  char code_word[50] = "hello its me";
 
-//add word to shared memory
-//create shared memory
-int shmid;
-shmid = shmget(2727980, sizeof(char*), IPC_CREAT | 0640);  
+  //server print dashes
+  printf("Word: %s\n", process(code_word));
 
-char *data;
-data = shmat(shmid, 0, 0);//attach it to variable data
-*data = *code_word;
+  //write code word to client
+  write(to_client, code_word, 50);
 
-//write dashes to client
-write(to_client, process(code_word), 50);
+  //store codeword length in shared memory
+  int shmid;
+  shmid = shmget(2727980,50, IPC_CREAT | 0640);  //create shared memory
 
-//server print dashes
-printf("Word: %s\n", process(code_word));
+  int *data;
+  data = shmat(shmid, 0, 0);//attach it to variable data
+  *data = strlen(code_word);
+
+//create text file
+  int w_file;
+
+  w_file = open("hangman.txt", 
+      O_WRONLY | O_TRUNC | O_CREAT, 0611);
+  if(w_file==-1)err();
+
+
+  //write dashes to textfile
+  write(w_file, process(code_word), strlen(code_word));
+  
 
   return to_client;
 }
