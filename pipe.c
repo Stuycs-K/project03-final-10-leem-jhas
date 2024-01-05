@@ -28,6 +28,21 @@ char *process(char *input){
   }*/
   return output;
 }
+
+char *check_guess(char guess, char *code_word){
+  int len = strlen(code_word);
+  char output[len];
+  for(int i = 0; i <len;i++){
+    if(code_word[i] == guess){
+      output[i] = guess;
+    }
+    else{
+      output[i] = '-';
+    }
+
+  }
+  return output;
+}
  
 int server_setup() {
   int from_client = 0;
@@ -100,32 +115,38 @@ int client_handshake(int *to_server) {
   char code_word[50];
   char modified_word[50];
   read(from_server, code_word, 50);
-  // strcpy(modified_word,process(code_word));
+  strcpy(modified_word,process(code_word));
   // printf("%s\n",modified_word);
+
+  int length_of_code_word = strlen(code_word);
+  //read last line
+  int r_file = open("hangman.txt", O_RDONLY , 0);   
+     if(r_file == -1) err();
+
+  lseek(r_file, -1*length_of_code_word, SEEK_END );
+  char buff[256+1];
+  buff[256]=0;
+
+  int bytes;
+  char current[50] = "";
+  printf("Current: ");
+
+  while((bytes = read(r_file, buff, BUFFER_SIZE))){
+      
+      if(bytes == -1)err();//all non 0 are true
+      printf("%s\n",buff); 
+
+  }  
 
   //ask client to guess a character
   printf("Guess a character:"); 
   char line_buff[256];
   fgets(line_buff,255,stdin);
   char guessed = line_buff[0];
-  printf("guessed: %c\n", guessed);
-
-//read shared memory and find where if any, letter is right
-  char *data;
-  int shmid = shmget(2727980, 50, IPC_CREAT | 0640);
-  data = shmat(shmid, 0, 0);
-
-  printf("shared memory gave: %s\n", data);
-  printf("hello\n");
-
-//edit process function to cover all except that one letter
-//use process function
-//print result from process function and add to shared memory
-
-
   
-  //strcpy(modified_word, process(code_word));
-  //write(wkp, modified_word, 50);
+  char after_guess[50];
+  strcpy(after_guess, check_guess(guessed, code_word));
+  printf("After guessing: %s\n", check_guess(guessed, code_word));
 
   close(from_server);
   return from_server;
@@ -152,19 +173,9 @@ int server_connect(int from_client) {
   
   char code_word[50] = "hello its me";
 
-  //server print dashes
-  printf("Word: %s\n", process(code_word));
-
   //write code word to client
   write(to_client, code_word, 50);
-
-  //store codeword length in shared memory
-  int shmid;
-  shmid = shmget(2727980,50, IPC_CREAT | 0640);  //create shared memory
-
-  int *data;
-  data = shmat(shmid, 0, 0);//attach it to variable data
-  *data = strlen(code_word);
+  printf("wrote code to client\n");
 
 //create text file
   int w_file;
@@ -172,11 +183,16 @@ int server_connect(int from_client) {
   w_file = open("hangman.txt", 
       O_WRONLY | O_TRUNC | O_CREAT, 0611);
   if(w_file==-1)err();
-
+  printf("created file\n");
 
   //write dashes to textfile
-  write(w_file, process(code_word), strlen(code_word));
+  char modified_word[50];
+  strcpy(modified_word,process(code_word));
+  write(w_file,modified_word, strlen(modified_word));
+  printf("wrote to file\n");
   
+  //server print dashes
+  printf("Word: %s\n", process(code_word));
 
   return to_client;
 }
