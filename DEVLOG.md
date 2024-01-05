@@ -20,4 +20,7 @@ Expanded description including how much time was spent on task.
 Expanded description including how much time was spent on task.
 
 ### 2024-01-03 - Brief description
-Expanded description including how much time was spent on task.
+- File setup for client-server connection
+- Have server send code word to client
+- Created function that replaces code word with dashes
+- ~1hr spent in total 
