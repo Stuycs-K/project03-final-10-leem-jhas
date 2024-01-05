@@ -5,6 +5,29 @@ int err(){
   printf("%s\n",strerror(errno));
   exit(1);
 }
+
+char *process(char *input){ 
+  if(input == NULL){
+      return NULL;
+  }
+  int len = strlen(input);
+  char output[len];
+  for(int i = 0; i < len; i++){
+    char* curr = input;
+    if(*curr != '\0'){
+      output[i] = '-';
+    }
+  }
+  //strcpy(output, input);
+  /*if(output != NULL){
+    char* curr = output;
+    while(*curr != '\0'){
+      curr='-';
+    }
+    curr++;
+  }*/
+  return output;
+}
  
 int server_setup() {
   int from_client = 0;
@@ -77,29 +100,15 @@ int client_handshake(int *to_server) {
   char code_word[50];
   char modified_word[50];
   read(from_server, code_word, 50);
-  write(wkp, modified_word, 50);
+  strcpy(modified_word,process(code_word));
+  printf("%s\n",modified_word);
+  //strcpy(modified_word, process(code_word));
+  //write(wkp, modified_word, 50);
 
   close(from_server);
   return from_server;
 }
 
-char *process(char *input){ 
-    if(input == NULL){
-        return NULL;
-    }
-    char* output = malloc(sizeof(input)+1);
-    strcpy(output, input);
-    if(output != NULL){
-        char* curr = output;
-        while(*curr != '\0'){
-        if((*curr >= 97 && *curr <= 122)){
-            *curr -= 32;
-        }
-        curr++;
-        }
-    }
-    return output;
-}
 int server_connect(int from_client) {   
   int to_client  = 0;
 
@@ -119,11 +128,10 @@ int server_connect(int from_client) {
 
   printf("Server received ACK, handshake complete\n");
   
-  char *code_word = "veni, vidi, vici";
-  char modified_word[50];
+  char* code_word = "hello its me";
+  //char modified_word[50];
   write(to_client, code_word, 50);
-  read(from_client, modified_word, 50);
-  printf("%s\n",modified_word);
+  //read(from_client, modified_word, 50);
 
   return to_client;
 }
