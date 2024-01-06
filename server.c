@@ -23,6 +23,7 @@ int main() {
     char modified_word[50];
     strcpy(modified_word,process(code_word));
     write(w_file,modified_word, strlen(modified_word));
+    printf("wrote %s\n", modified_word);
     while(1){
         int to_client;
         int from_client;
