@@ -128,15 +128,17 @@ int client_handshake(int *to_server) {
   buff[256]=0;
 
   int bytes;
-  char current[50] = "";
-  printf("Current: ");
+  char* current;
+
 
   while((bytes = read(r_file, buff, BUFFER_SIZE))){
       
       if(bytes == -1)err();//all non 0 are true
-      printf("%s\n",buff); 
-
+      current=buff;
+      // printf("%s\n",buff); 
+      // printf("h\n");
   }  
+  printf("Current:%s \n", current);
 
   //ask client to guess a character
   printf("Guess a character:"); 
@@ -145,9 +147,19 @@ int client_handshake(int *to_server) {
   char guessed = line_buff[0];
   
   char after_guess[50];
-  strcpy(after_guess, check_guess(guessed, code_word));
+  strcpy(after_guess, check_guess(guessed, current));
   printf("After guessing: %s\n", check_guess(guessed, code_word));
 
+
+  int w_file;
+
+  w_file = open("hangman.txt", 
+      O_WRONLY | O_TRUNC | O_CREAT, 0611);
+  if(w_file==-1)err();
+
+
+  write(w_file, after_guess, strlen(after_guess));//writing to file 
+  printf("wrote to file after guess");
   close(from_server);
   return from_server;
 }
@@ -173,26 +185,31 @@ int server_connect(int from_client) {
   
   char code_word[50] = "hello its me";
 
-  //write code word to client
+
+  // int w_file;
+
+  // w_file = open("hangman.txt", 
+  //     O_WRONLY | O_TRUNC | O_CREAT, 0611);
+  // if(w_file==-1)err();
+  // // printf("created file\n");
+  // //write dashes to textfile
+  // char modified_word[50];
+  // strcpy(modified_word,process(code_word));
+  // write(w_file,modified_word, strlen(modified_word));
+//create text file
+
+  
+  printf("Word: %s\n", process(code_word));
   write(to_client, code_word, 50);
   printf("wrote code to client\n");
-
-//create text file
-  int w_file;
-
-  w_file = open("hangman.txt", 
-      O_WRONLY | O_TRUNC | O_CREAT, 0611);
-  if(w_file==-1)err();
-  printf("created file\n");
-
-  //write dashes to textfile
-  char modified_word[50];
-  strcpy(modified_word,process(code_word));
-  write(w_file,modified_word, strlen(modified_word));
-  printf("wrote to file\n");
+  // printf("wrote to file\n");
   
   //server print dashes
-  printf("Word: %s\n", process(code_word));
+  
+
+
+  //write code word to client
+  
 
   return to_client;
 }

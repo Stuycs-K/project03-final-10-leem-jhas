@@ -11,6 +11,18 @@ static void sighandler(int signo) {
 int main() {
     signal(SIGINT,sighandler);
 
+
+    char code_word[50] = "hello its me";
+    int w_file;
+
+    w_file = open("hangman.txt", 
+        O_WRONLY | O_TRUNC | O_CREAT, 0611);
+    if(w_file==-1)err();
+    // printf("created file\n");
+    //write dashes to textfile
+    char modified_word[50];
+    strcpy(modified_word,process(code_word));
+    write(w_file,modified_word, strlen(modified_word));
     while(1){
         int to_client;
         int from_client;
