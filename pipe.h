@@ -40,7 +40,7 @@ int multi_server_connect(int from_client, struct message m);
 
 
 char *process(char *input);
-char *check_guess(char guess, char *code_word);
+char *check_guess(char guess, char *code_word, char* current);
 
 int err();
 

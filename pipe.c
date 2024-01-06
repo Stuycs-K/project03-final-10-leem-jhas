@@ -29,7 +29,8 @@ char *process(char *input){
   return output;
 }
 
-char *check_guess(char guess, char *code_word){
+//takes in client guess, the codeword, and the current state, and returns the new state
+char *check_guess(char guess, char *code_word, char* current){
   int len = strlen(code_word);
   char output[len];
   for(int i = 0; i <len;i++){
@@ -37,7 +38,7 @@ char *check_guess(char guess, char *code_word){
       output[i] = guess;
     }
     else{
-      output[i] = '-';
+      output[i] = current[i];
     }
 
   }
@@ -123,22 +124,20 @@ int client_handshake(int *to_server) {
   int r_file = open("hangman.txt", O_RDONLY , 0);   
       if(r_file == -1) err();
 
-  lseek(r_file, -1*length_of_code_word, SEEK_END );
+                          // lseek(r_file, -1*length_of_code_word, SEEK_END );
   char buff[256+1];
   buff[256]=0;
 
   int bytes;
-  char* current;
+  // char* current;
 
-  while((bytes = read(r_file, buff, BUFFER_SIZE))){
+  while((bytes = read(r_file, buff, 128))){
       
       if(bytes == -1)err();//all non 0 are true
-      current=buff;
-      // printf("h\n");
+      printf("read\n");
   }  
-  current[strlen(current)-2] = '\0';
-
-  printf("Current:%s \n", current);
+                          // current[strlen(current)-2] = '\0';
+  printf("Current:%s \n", buff);
 
   //ask client to guess a character
   printf("Guess a character:"); 
@@ -147,18 +146,18 @@ int client_handshake(int *to_server) {
   char guessed = line_buff[0];
   
   char after_guess[50];
-  strcpy(after_guess, check_guess(guessed, code_word));
-  printf("After guessing: %s\n", check_guess(guessed, code_word));
+  strcpy(after_guess, check_guess(guessed, code_word, buff));
+  printf("After guessing: %s\n", check_guess(guessed, code_word, buff));
 
 
   int w_file;
 
   w_file = open("hangman.txt", 
-      O_WRONLY , 0611);
+      O_TRUNC|O_WRONLY , 0611);
   if(w_file==-1)err();
 
-  write(w_file, after_guess, strlen(after_guess));//writing to file 
-  printf("wrote to file after guess");
+  write(w_file, check_guess(guessed, code_word, buff), strlen(check_guess(guessed, code_word, buff)));//writing to file 
+  printf("wrote %s file after guess\n", check_guess(guessed, code_word, buff));
   close(from_server);
   return from_server;
 }
