@@ -115,7 +115,7 @@ int client_handshake(int *to_server) {
   char code_word[50];
   char modified_word[50];
   read(from_server, code_word, 50);
-  strcpy(modified_word,process(code_word));
+  //strcpy(modified_word,process(code_word));
   // printf("%s\n",modified_word);
 
   int length_of_code_word = strlen(code_word);
@@ -129,7 +129,7 @@ int client_handshake(int *to_server) {
 
   int bytes;
   char current[50] = "";
-  printf("Current: ");
+  printf("Current: \n");
 
   while((bytes = read(r_file, buff, BUFFER_SIZE))){
       
@@ -180,8 +180,7 @@ int server_connect(int from_client) {
 //create text file
   int w_file;
 
-  w_file = open("hangman.txt", 
-      O_WRONLY | O_TRUNC | O_CREAT, 0611);
+  w_file = open("hangman.txt", O_WRONLY | O_TRUNC | O_CREAT, 0611);
   if(w_file==-1)err();
   printf("created file\n");
 
@@ -192,7 +191,7 @@ int server_connect(int from_client) {
   printf("wrote to file\n");
   
   //server print dashes
-  printf("Word: %s\n", process(code_word));
+  printf("Word: %s\n", modified_word);
 
   return to_client;
 }

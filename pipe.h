@@ -13,7 +13,7 @@
 #define WKP "hangman"
 
 #define HANDSHAKE_BUFFER_SIZE 10
-#define BUFFER_SIZE 1000
+#define BUFFER_SIZE 50
 #define MAX_CLIENTS 100
 
 #define SYN 0
