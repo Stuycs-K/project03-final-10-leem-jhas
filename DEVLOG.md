@@ -14,6 +14,12 @@ Expanded description including how much time was spent on task.
 (only works for one pass)
 - more than 1 hr was spent on task 
 
+### 2024-01-05 - Client guesses
+- Added server.c setting up initial dashes
+- Added read and write to puth client and server
+- issues with reading/writing - not done
+- more than ~1hr 30min was spent on task 
+
 ## Player 2: Mary
 
 ### 2024-01-02 - Brief description
