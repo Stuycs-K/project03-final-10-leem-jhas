@@ -113,32 +113,32 @@ int client_handshake(int *to_server) {
   write(wkp, ACK, 50);
   
   char code_word[50];
-  char modified_word[50];
+  // char modified_word[50];
   read(from_server, code_word, 50);
-  strcpy(modified_word,process(code_word));
+  // strcpy(modified_word,process(code_word));
   // printf("%s\n",modified_word);
 
   int length_of_code_word = strlen(code_word);
   //read last line
-  int r_file = open("hangman.txt", O_RDONLY , 0);   
-     if(r_file == -1) err();
+                  // int r_file = open("hangman.txt", O_RDONLY , 0);   
+                  //    if(r_file == -1) err();
 
-  lseek(r_file, -1*length_of_code_word, SEEK_END );
-  char buff[256+1];
-  buff[256]=0;
+                // lseek(r_file, -1*length_of_code_word, SEEK_END );
+                // char buff[256+1];
+                // buff[256]=0;
 
-  int bytes;
-  char* current;
+                // int bytes;
+                // char* current;
 
 
-  while((bytes = read(r_file, buff, BUFFER_SIZE))){
-      
-      if(bytes == -1)err();//all non 0 are true
-      current=buff;
-      // printf("%s\n",buff); 
-      // printf("h\n");
-  }  
-  printf("Current:%s \n", current);
+                // while((bytes = read(r_file, buff, BUFFER_SIZE))){
+                    
+                //     if(bytes == -1)err();//all non 0 are true
+                //     current=buff;
+                //     // printf("%s\n",buff); 
+                //     // printf("h\n");
+                // }  
+                // printf("Current:%s \n", current);
 
   //ask client to guess a character
   printf("Guess a character:"); 
@@ -147,19 +147,19 @@ int client_handshake(int *to_server) {
   char guessed = line_buff[0];
   
   char after_guess[50];
-  strcpy(after_guess, check_guess(guessed, current));
+  // strcpy(after_guess, check_guess(guessed, code_word));
   printf("After guessing: %s\n", check_guess(guessed, code_word));
 
 
-  int w_file;
+              // int w_file;
 
-  w_file = open("hangman.txt", 
-      O_WRONLY | O_TRUNC | O_CREAT, 0611);
-  if(w_file==-1)err();
+              // w_file = open("hangman.txt", 
+              //     O_WRONLY | O_TRUNC | O_CREAT, 0611);
+              // if(w_file==-1)err();
 
 
-  write(w_file, after_guess, strlen(after_guess));//writing to file 
-  printf("wrote to file after guess");
+              // write(w_file, after_guess, strlen(after_guess));//writing to file 
+              // printf("wrote to file after guess");
   close(from_server);
   return from_server;
 }
@@ -198,12 +198,37 @@ int server_connect(int from_client) {
   // write(w_file,modified_word, strlen(modified_word));
 //create text file
 
+  int length_of_code_word = strlen(code_word);
+  //read last line
+  int r_file = open("hangman.txt", O_RDONLY , 0);   
+     if(r_file == -1) err();
+
+  lseek(r_file, -1*length_of_code_word, SEEK_END );
+  char buff[256+1];
+  buff[256]=0;
+
+  int bytes;
+  char* current;
+
+  while((bytes = read(r_file, buff, BUFFER_SIZE))){
+      
+      if(bytes == -1)err();//all non 0 are true
+      current=buff;
+      // printf("%s\n",buff); 
+      // printf("h\n");
+  }  
+  printf("Word: %s\n", buff);
+
+          // int w_file;
+
+          // w_file = open("hangman.txt", 
+          //     O_WRONLY | O_TRUNC | O_CREAT, 0611);
+          // if(w_file==-1)err();
+          // write(w_file,buff, strlen(buff));
+          // printf("wrote to file\n");
   
-  printf("Word: %s\n", process(code_word));
-  write(to_client, code_word, 50);
+  write(to_client, code_word, strlen(code_word));
   printf("wrote code to client\n");
-  // printf("wrote to file\n");
-  
   //server print dashes
   
 
