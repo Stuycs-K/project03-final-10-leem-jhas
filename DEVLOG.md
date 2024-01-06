@@ -20,6 +20,11 @@ Expanded description including how much time was spent on task.
 - issues with reading/writing - not done
 - more than ~1hr 30min was spent on task 
 
+### 2024-01-06 - Client guesses
+- fixed reading/writing to files
+- stores client guesses
+- ~50 min spent in total 
+
 ## Player 2: Mary
 
 ### 2024-01-02 - Brief description
