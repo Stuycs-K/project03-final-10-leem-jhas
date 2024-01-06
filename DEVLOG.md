@@ -27,3 +27,8 @@ Expanded description including how much time was spent on task.
 - Have server send code word to client
 - Created function that replaces code word with dashes
 - ~1hr spent in total
+
+### 2024-01-05 - Dashes
+- Tried to get dashes to work consistently and correctly - unfinished
+- ~2hr spent in total
+
