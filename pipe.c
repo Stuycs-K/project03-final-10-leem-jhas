@@ -56,7 +56,7 @@ char *check_guess(char *guess, char *code_word, char* current){
       }
     }
   }
-  /*else{
+  else{
     //char* output = calloc(code_len,sizeof(char));
     for(int i = 0; i < code_len; i++){
       if(code_word[i] == guess[i]){
@@ -66,7 +66,7 @@ char *check_guess(char *guess, char *code_word, char* current){
         output[i] = current[i];
       }
     }
-  }*/
+  }
   /*
   char* output = calloc(len,sizeof(char));
     for(int i = 0; i < code_len; i++){
