@@ -40,7 +40,7 @@ int server_handshake_half(int *to_client, int from_client);
 
 
 char *process(char *input);
-char *check_guess(char guess, char *code_word, char* current);
+char *check_guess(char *guess, char *code_word, char* current);
 
 int err();
 

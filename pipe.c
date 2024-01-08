@@ -24,13 +24,9 @@ char *process(char *input){
   strcpy(output, input);
   printf("input: %s, output: %s, size: %d\n",input, output, len);
   if(output != NULL){
-    printf("hey\n");
     char* curr = output;
-    printf("hey1\n");
     int i = 0;
     while(i < len){
-      //printf("hey2\n");
-      //strcpy(curr,"-");
       *curr = '-'; 
       curr++;
       i++;
@@ -41,18 +37,46 @@ char *process(char *input){
 }
 
 //takes in client guess, the codeword, and the current state, and returns the new state
-char *check_guess(char guess, char *code_word, char* current){
-  int len = strlen(code_word);
-  char output[len];
-  for(int i = 0; i <len;i++){
-    if(code_word[i] == guess){
-      output[i] = guess;
-    }
-    else{
-      output[i] = current[i];
-    }
-
+char *check_guess(char *guess, char *code_word, char* current){
+  if(guess == NULL){
+    return current;
   }
+  int code_len = strlen(code_word);
+  int guess_len = strlen(guess)-1;
+  //char *output = malloc(len);
+  //char *curr = code_word;
+  char* output = calloc(code_len,sizeof(char));
+  if(guess_len == 1){
+    for(int i = 0; i < code_len; i++){
+      if(code_word[i] == guess[0]){
+        output[i] = guess[0];
+      }
+      else{
+        output[i] = current[i];
+      }
+    }
+  }
+  /*else{
+    //char* output = calloc(code_len,sizeof(char));
+    for(int i = 0; i < code_len; i++){
+      if(code_word[i] == guess[i]){
+        output[i] = guess[i];
+      }
+      else{
+        output[i] = current[i];
+      }
+    }
+  }*/
+  /*
+  char* output = calloc(len,sizeof(char));
+    for(int i = 0; i < code_len; i++){
+      if(code_word[i] == guess[i]){
+        output[i] = guess[i];
+      }
+      else{
+        output[i] = current[i];
+      }
+    }*/
   return output;
 }
  
@@ -155,7 +179,7 @@ int client_handshake(int *to_server) {
   printf("Guess a character:"); 
   char line_buff[256];
   fgets(line_buff,255,stdin);
-  char guessed = line_buff[0];
+  char *guessed = line_buff;
   
   //process guess and get new state
   char after_guess[50];
