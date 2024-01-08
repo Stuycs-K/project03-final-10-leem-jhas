@@ -11,8 +11,18 @@ static void sighandler(int signo) {
 int main() {
     signal(SIGINT,sighandler);
 
-
     char code_word[50] = "hello its me";
+    //shared memory 
+
+    char *data;
+    int shmid;
+    shmid = shmget(123, sizeof(code_word), IPC_CREAT | 0640);
+    data = shmat(shmid, 0, 0);
+    data = code_word;
+    printf("data: %s\n", data);
+    shmdt(data); //detach
+
+
     int w_file;
 
     w_file = open("hangman.txt", 
@@ -42,4 +52,8 @@ int main() {
             return p;
         }
     }
+    //remove shared memory 
+    int shmid;
+    shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
+    shmctl(shmid, IPC_RMID, 0); //remove the segment
 } 
