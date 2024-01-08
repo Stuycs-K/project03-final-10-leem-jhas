@@ -34,7 +34,14 @@ int server_setup();
 int server_handshake_half(int *to_client, int from_client);
 
 //multi_server
-int multi_server_setup();
-int multi_server_connect(int from_client, struct message m);
+//int multi_server_setup();
+//int multi_server_connect(int from_client, struct message m);
+
+
+
+char *process(char *input);
+char *check_guess(char guess, char *code_word, char* current);
+
+int err();
 
 #endif
