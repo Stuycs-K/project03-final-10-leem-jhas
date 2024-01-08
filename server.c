@@ -14,12 +14,12 @@ int main() {
     char code_word[50] = "hello its me";
     //shared memory 
 
-    char *data;
+    int *data;
     int shmid;
-    shmid = shmget(123, sizeof(code_word), IPC_CREAT | 0640);
+    shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
     data = shmat(shmid, 0, 0);
-    data = code_word;
-    printf("data: %s\n", data);
+    *data = 0;
+    printf("Round: %d\n", *data);
     shmdt(data); //detach
 
 
@@ -52,8 +52,7 @@ int main() {
             return p;
         }
     }
-    //remove shared memory 
-    int shmid;
-    shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
-    shmctl(shmid, IPC_RMID, 0); //remove the segment
+    // //remove shared memory 
+    // shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
+    // shmctl(shmid, IPC_RMID, 0); //remove the segment
 } 

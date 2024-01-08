@@ -133,6 +133,16 @@ int client_handshake(int *to_server) {
       if(bytes == -1)err();//all non 0 are true
       // printf("read\n");
   }  
+  
+
+  //shared memory
+  int *data;
+  int shmid;
+  shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
+  data = shmat(shmid, 0, 0);
+  *data = * data + 1;
+  printf("Round %d\n", *data);
+  shmdt(data); //detach
 
   printf("Current:%s \n", buff);
 
@@ -198,6 +208,14 @@ int server_connect(int from_client) {
       if(bytes == -1)err();//all non 0 are true
       printf("read\n");
   }  
+
+  //shared memory
+  int *data;
+  int shmid;
+  shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
+  data = shmat(shmid, 0, 0);
+  printf("Result from round %d\n", *data);
+  shmdt(data); //detach
 
   printf("Current:%s \n", buff);
 
