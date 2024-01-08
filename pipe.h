@@ -13,7 +13,7 @@
 #define WKP "hangman"
 
 #define HANDSHAKE_BUFFER_SIZE 10
-#define BUFFER_SIZE 1000
+#define BUFFER_SIZE 50
 #define MAX_CLIENTS 100
 
 #define SYN 0
@@ -34,13 +34,13 @@ int server_setup();
 int server_handshake_half(int *to_client, int from_client);
 
 //multi_server
-int multi_server_setup();
-int multi_server_connect(int from_client, struct message m);
+//int multi_server_setup();
+//int multi_server_connect(int from_client, struct message m);
 
 
 
 char *process(char *input);
-char *check_guess(char guess, char *code_word, char* current);
+char *check_guess(char *guess, char *code_word, char* current);
 
 int err();
 

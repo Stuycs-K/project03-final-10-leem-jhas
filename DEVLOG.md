@@ -43,3 +43,7 @@ Expanded description including how much time was spent on task.
 - Tried to get dashes to work consistently and correctly - unfinished
 - ~2hr spent in total
 
+### 2024-01-08 - Dashes and client guesses
+- Dashes appear on both client and server without extra characters
+- server now accepts client guesses with length greater than 1
+- ~2hr spent in total
