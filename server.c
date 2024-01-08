@@ -12,6 +12,18 @@ int main() {
     signal(SIGINT,sighandler);
 
     char *code_word = "hello its me";
+    //shared memory 
+
+    int *data;
+    int shmid;
+    shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
+    data = shmat(shmid, 0, 0);
+    *data = 0;
+    printf("Round: %d\n", *data);
+    shmdt(data); //detach
+
+
+    
     int w_file;
 
     w_file = open("hangman.txt", O_WRONLY | O_TRUNC | O_CREAT, 0611);
@@ -40,4 +52,7 @@ int main() {
             return p;
         }
     }
+    //remove shared memory 
+    shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
+    shmctl(shmid, IPC_RMID, 0); //remove the segment
 } 
