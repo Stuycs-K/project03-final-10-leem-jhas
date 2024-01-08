@@ -48,13 +48,13 @@ char *check_guess(char guess, char *code_word, char* current){
 int server_setup() {
   int from_client = 0;
 
-  printf("Server making the pipe\n");
+  // printf("Server making the pipe\n");
 
-  printf("Server opening the pipe\n");
+  // printf("Server opening the pipe\n");
   mkfifo(WKP, 0666);
   from_client = open(WKP, O_RDONLY);
 
-  printf("Server removing the pipe\n");
+  // printf("Server removing the pipe\n");
 
   remove(WKP);
 
@@ -64,22 +64,22 @@ int server_setup() {
 int server_handshake(int *to_client) {
   int from_client = server_setup();
 
-  printf("Server reading SYN (the pid)\n");
+  // printf("Server reading SYN (the pid)\n");
   char private_name[50];
   read(from_client, private_name, 50);
 
-  printf("Server opening the Private Pipe\n");
+  // printf("Server opening the Private Pipe\n");
   int pp = open(private_name, O_WRONLY);
 
-  printf("Server sending SYN_ACK\n");
+  // printf("Server sending SYN_ACK\n");
   write(pp, SYN_ACK, 50);
 
-  printf("Server reading final ACK\n");
+  // printf("Server reading final ACK\n");
   char ack[50];
   read(from_client, ack, 50);
 
   if(strcmp(ack,ACK)==0){
-    printf("Server received ACK, handshake complete\n");
+    // printf("Server received ACK, handshake complete\n");
   }
 
   return from_client;
@@ -91,26 +91,26 @@ int client_handshake(int *to_server) {
   char* private_name = calloc(50, sizeof(char));
   sprintf(private_name, "%d", getpid());
 
-  printf("Client making Private pipe\n");
+  // printf("Client making Private pipe\n");
 
-  printf("Client opening WKP\n");
+  // printf("Client opening WKP\n");
   int wkp = open(WKP, O_WRONLY);
 
-  printf("Client Writing PP to WKP\n");
+  // printf("Client Writing PP to WKP\n");
   write(wkp, private_name, 50);
 
-  printf("Client Opening PP\n");
+  // printf("Client Opening PP\n");
   mkfifo(private_name, 0666);
   from_server = open(private_name, O_RDONLY);
 
-  printf("Client Deleting PP\n");
+  // printf("Client Deleting PP\n");
   remove(private_name);
 
-  printf("Client reading SYN_ACK\n");
+  // printf("Client reading SYN_ACK\n");
   char syn_ack[50];
   read(from_server, syn_ack, 50);
 
-  printf("Client sending ACK\n");
+  // printf("Client sending ACK\n");
   write(wkp, ACK, 50);
   
   //get code word from client
@@ -173,21 +173,21 @@ int client_handshake(int *to_server) {
 int server_connect(int from_client) {   
   int to_client  = 0;
 
-  printf("Server reading SYN (the pid)\n");
+  // printf("Server reading SYN (the pid)\n");
   char private_name[50];
   read(from_client, private_name, 50);
 
-  printf("Server opening the Private Pipe\n");
+  // printf("Server opening the Private Pipe\n");
   to_client = open(private_name, O_WRONLY);
 
-  printf("Server sending SYN_ACK\n");
+  // printf("Server sending SYN_ACK\n");
   write(to_client, SYN_ACK, 50);
 
-  printf("Server reading final ACK\n");
+  // printf("Server reading final ACK\n");
   char ack[50];
   read(from_client, ack, 50);
 
-  printf("Server received ACK, handshake complete\n");
+  // printf("Server received ACK, handshake complete\n");
   
   char code_word[50] = "hello its me";
   
@@ -206,7 +206,7 @@ int server_connect(int from_client) {
   while((bytes = read(r_file, buff, 128))){
       
       if(bytes == -1)err();//all non 0 are true
-      printf("read\n");
+      // printf("read\n");
   }  
 
   //shared memory

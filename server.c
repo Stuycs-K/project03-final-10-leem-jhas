@@ -52,7 +52,7 @@ int main() {
             return p;
         }
     }
-    // //remove shared memory 
-    // shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
-    // shmctl(shmid, IPC_RMID, 0); //remove the segment
+    //remove shared memory 
+    shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
+    shmctl(shmid, IPC_RMID, 0); //remove the segment
 } 
