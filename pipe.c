@@ -10,15 +10,7 @@ char *process(char *input){
   if(input == NULL){
     return NULL;
   }
-  /*int len = strlen(input);
-  char output[len];
-  for(int i = 0; i < len; i++){
-    //char* curr = input;
-    if(input[i] != '\0'){
-      output[i] = '-';
-    }
-  }*/
-  //input[strlen(input)] = '/0'
+
   char* output = calloc(sizeof(input),sizeof(char));
   int len = strlen(input);
   strcpy(output, input);
@@ -43,8 +35,7 @@ char *check_guess(char *guess, char *code_word, char* current){
   }
   int code_len = strlen(code_word);
   int guess_len = strlen(guess)-1;
-  //char *output = malloc(len);
-  //char *curr = code_word;
+
   char* output = calloc(code_len,sizeof(char));
   if(guess_len == 1){
     for(int i = 0; i < code_len; i++){
@@ -57,7 +48,6 @@ char *check_guess(char *guess, char *code_word, char* current){
     }
   }
   else{
-    //char* output = calloc(code_len,sizeof(char));
     for(int i = 0; i < code_len; i++){
       if(code_word[i] == guess[i]){
         output[i] = guess[i];
@@ -67,16 +57,6 @@ char *check_guess(char *guess, char *code_word, char* current){
       }
     }
   }
-  /*
-  char* output = calloc(len,sizeof(char));
-    for(int i = 0; i < code_len; i++){
-      if(code_word[i] == guess[i]){
-        output[i] = guess[i];
-      }
-      else{
-        output[i] = current[i];
-      }
-    }*/
   return output;
 }
  
