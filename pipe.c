@@ -158,12 +158,10 @@ int client_handshake(int *to_server) {
   data = shmat(shmid, 0, 0);
   *data = * data + 1;
   printf("Round %d\n", *data);
-  shmdt(data); //detach
   
-
- 
-
-  printf("Current:%s \n", buff);
+  
+  
+ printf("Current:%s \nlength: %lu\n", buff, strlen(buff));
 
   //ask client to guess a character
   printf("Guess a character:"); 
@@ -174,7 +172,12 @@ int client_handshake(int *to_server) {
   //process guess and get new state
   char after_guess[50];
   strcpy(after_guess, check_guess(guessed, code_word, buff));
-  printf("After guessing: %s\n", check_guess(guessed, code_word, buff));
+  if(strcmp(code_word, check_guess(guessed, code_word, buff)) ==0){
+    printf("Congrats!! You won in %d rounds.\n", *data);
+  }else{
+    printf("After guessing: %s\n", check_guess(guessed, code_word, buff));
+  }
+  
 
   //write new state 
   int w_file;
@@ -183,7 +186,8 @@ int client_handshake(int *to_server) {
   if(w_file==-1)err();
 
   write(w_file, check_guess(guessed, code_word, buff), strlen(check_guess(guessed, code_word, buff)));//writing to file 
-  // printf("wrote %s file after guess\n", check_guess(guessed, code_word, buff));
+  // printf("wrote %s file after guess\nlength: %lu\n", check_guess(guessed, code_word, buff), strlen(check_guess(guessed, code_word, buff)));
+  shmdt(data); //detach
   close(from_server);
   return from_server;
 }
@@ -234,7 +238,7 @@ int server_connect(int from_client) {
   printf("Result from round %d\n", *data);
   shmdt(data); //detach
 
-  printf("Current:%s \n", buff);
+  printf("Current:%s \nlength: %lu\n", buff, strlen(buff));
 
 
   //writes back to file 
