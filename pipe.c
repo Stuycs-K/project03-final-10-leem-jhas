@@ -26,6 +26,25 @@ char *process(char *input){
     *curr = '\0';
   }
   return output;
+  /*
+  printf("hi\n");
+  int len = strlen(input);
+  printf("hi\n");
+  char output[50];
+  printf("hi\n");
+  strcpy(output, input);
+  printf("input: %s, output: %s, size: %d\n",input, output, len);
+  if(input != NULL){
+    //char* curr = output;
+    int i = 0;
+    while(i < len){
+      output[i] = '-';
+      i++; 
+    }
+    output[i] = '\0';
+  }
+  printf("hi\n");
+  return output;*/
 }
 
 //takes in client guess, the codeword, and the current state, and returns the new state
@@ -36,7 +55,7 @@ char *check_guess(char *guess, char *code_word, char* current){
   int code_len = strlen(code_word);
   int guess_len = strlen(guess)-1;
 
-  char* output = calloc(code_len,sizeof(char));
+  char* output = calloc(code_len+1,sizeof(char));
   if(guess_len == 1){
     for(int i = 0; i < code_len; i++){
       if(code_word[i] == guess[0]){
@@ -57,6 +76,7 @@ char *check_guess(char *guess, char *code_word, char* current){
       }
     }
   }
+  output[code_len]='\0';
   return output;
 }
  
@@ -142,10 +162,10 @@ int client_handshake(int *to_server) {
   //buff[50]=0;
 
   //int bytes;
-  char buff[256];
+  char buff[50];
   ssize_t bytes;
 
-  while((bytes = read(r_file, buff, sizeof(buff) - 1)) > 0){ 
+  while((bytes = read(r_file, buff, sizeof(buff)-1)) > 0){ 
     if(bytes == -1)err();//all non 0 are true
     buff[bytes] = '\0';
     // printf("read\n");
