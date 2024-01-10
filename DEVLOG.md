@@ -25,6 +25,11 @@ Expanded description including how much time was spent on task.
 - stores client guesses
 - ~50 min spent in total 
 
+### 2024-01-08 - Shared memory and dashes
+- Added shared memory to keep track of rounds
+- tried to get dashes to work correctly - unsuccessful 
+- ~1hr 30min spent in total
+
 ## Player 2: Mary
 
 ### 2024-01-02 - Brief description
