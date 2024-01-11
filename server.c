@@ -21,7 +21,7 @@ int main() {
     *data = 0;
     printf("Round: %d\n", *data);
     shmdt(data); //detach
-
+    printf("hello\n");
 
     
     int w_file;
@@ -30,8 +30,11 @@ int main() {
     if(w_file==-1)err();
     // printf("created file\n");
     //write dashes to textfile
+    printf("hello\n");
     char modified_word[50];
+    printf("hello\n");
     strcpy(modified_word,process(code_word));
+    printf("hey\n");
     write(w_file,modified_word, 50);
     printf("wrote %s\n", modified_word);
     while(1){
