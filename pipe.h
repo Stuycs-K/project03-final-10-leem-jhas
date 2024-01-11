@@ -9,6 +9,7 @@
 #include <sys/shm.h> 
 #include <unistd.h>
 #include <signal.h>
+#include <time.h>
 
 #ifndef NETWORKING_H
 #define NETWORKING_H
@@ -43,6 +44,7 @@ int server_handshake_half(int *to_client, int from_client);
 
 char *process(char *input);
 char *check_guess(char *guess, char *code_word, char* current);
+int victory(int to_client);
 
 int err();
 

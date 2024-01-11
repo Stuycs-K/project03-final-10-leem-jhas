@@ -230,28 +230,31 @@ int server_connect(int from_client) {
   char code_word[50] = "orange";
   
 
-  //reads from file
+
+
   int r_file = open("hangman.txt", O_RDONLY , 0);   
   if(r_file == -1) err();
 
 
-  char buff[256+1];
-  buff[256]=0;
+  //char buff[256+1];
+  //buff[50]=0;
 
-  int bytes;
-  // char* current;
+  //int bytes;
+  char buff[256];
+  ssize_t bytes;
 
-  while((bytes = read(r_file, buff, 128))){ 
-    if(bytes == -1) err();//all non 0 are true
-    printf("read\n");
-  }  
+  while((bytes = read(r_file, buff, sizeof(buff) - 1)) > 0){ 
+    if(bytes == -1)err();//all non 0 are true
+    buff[bytes] = '\0';
+    // printf("read\n");
+  } 
 
   //shared memory
   int *data;
   int shmid;
   shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
   data = shmat(shmid, 0, 0);
-  printf("Result from round %d\n", *data);
+  printf("\n-----\nResult from round %d\n", *data);
   shmdt(data); //detach
 
   printf("Current:%s \nlength: %lu\n", buff, strlen(buff));
