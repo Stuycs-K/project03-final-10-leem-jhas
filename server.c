@@ -9,12 +9,23 @@ static void sighandler(int signo) {
     }
 }
 
-char* random_code_word(){
+void write_random_code_word(){
+    int w_file;
+    w_file = open("codewords.txt", O_WRONLY | O_TRUNC | O_CREAT, 0611);
+    if(w_file==-1)err();
     char list[5][50] = {"orange", "banana", "kiwi", "apple", "pineapple"};
+    int length = sizeof(list) / sizeof(list[0]);
+    for(int i = 0; i < list; i++){
+        write(w_file, list[i], 50);
+    }
+    
+}
+
+char* get_random_code_word(char* list){
     srand(time(NULL));
     int num = (rand() % (5));
     char *output = list[num];
-    return output;
+
 }
 int main() {
     signal(SIGINT,sighandler);
