@@ -59,8 +59,11 @@ int main() {
     if(w_file==-1)err();
     // printf("created file\n");
     //write dashes to textfile
+    printf("hello\n");
     char modified_word[50];
+    printf("hello\n");
     strcpy(modified_word,process(code_word));
+    printf("hey\n");
     write(w_file,modified_word, 50);
     // printf("wrote %s\n", modified_word);
     int victory;
