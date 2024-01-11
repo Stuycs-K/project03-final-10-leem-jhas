@@ -11,38 +11,39 @@ char *process(char *input){
     return NULL;
   }
 
-  char* output = calloc(sizeof(input),sizeof(char));
-  int len = strlen(input);
+  //char* output = calloc(sizeof(input),sizeof(char));
+  char *output = malloc(sizeof(input)+1);
+  //int len = strlen(input);
   strcpy(output, input);
-  printf("input: %s, output: %s, size: %d\n",input, output, len);
+  printf("input: %s, output: %s, size: \n",input, output);
   if(output != NULL){
     char* curr = output;
-    int i = 0;
-    while(i < len){
+    //int i = 0;
+    while(*curr != '\0'){
       *curr = '-'; 
       curr++;
-      i++;
+      //i++;
     }
-    *curr = '\0';
+    //*curr = '\0';
   }
   return output;
   /*
-  printf("hi\n");
+  //printf("hi\n");
   int len = strlen(input);
-  printf("hi\n");
+  //printf("hi\n");
   char output[50];
-  printf("hi\n");
+  //printf("hi\n");
   strcpy(output, input);
   printf("input: %s, output: %s, size: %d\n",input, output, len);
-  if(input != NULL){
-    //char* curr = output;
-    int i = 0;
-    while(i < len){
-      output[i] = '-';
-      i++; 
-    }
-    output[i] = '\0';
+
+  //char* curr = output;
+  int i = 0;
+  while(i < len){
+    output[i] = '-';
+    i++; 
   }
+  output[i] = '\0';
+  
   printf("hi\n");
   return output;*/
 }
@@ -54,8 +55,8 @@ char *check_guess(char *guess, char *code_word, char* current){
   }
   int code_len = strlen(code_word);
   int guess_len = strlen(guess)-1;
-
-  char* output = calloc(code_len+1,sizeof(char));
+  //char output[code_len];
+  char* output = malloc(sizeof(code_word)+1);
   if(guess_len == 1){
     for(int i = 0; i < code_len; i++){
       if(code_word[i] == guess[0]){
@@ -67,13 +68,16 @@ char *check_guess(char *guess, char *code_word, char* current){
     }
   }
   else{
-    for(int i = 0; i < code_len; i++){
+    for(int i = 0; i < guess_len; i++){
       if(code_word[i] == guess[i]){
         output[i] = guess[i];
       }
       else{
         output[i] = current[i];
       }
+    }
+    for(int i = guess_len; i < code_len; i++){
+      output[i] = current[i];
     }
   }
   output[code_len]='\0';
