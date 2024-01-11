@@ -14,7 +14,7 @@ char *process(char *input){
   char* output = calloc(sizeof(input),sizeof(char));
   int len = strlen(input);
   strcpy(output, input);
-  printf("input: %s, output: %s, size: %d\n",input, output, len);
+  // printf("input: %s, output: %s, size: %d\n",input, output, len);
   if(output != NULL){
     char* curr = output;
     int i = 0;
@@ -150,7 +150,10 @@ int client_handshake(int *to_server) {
     buff[bytes] = '\0';
     // printf("read\n");
   } 
-
+  if(strcmp(code_word, buff)==0){
+    printf("NO STOP YOU HAVE ALREADY WON!!!!!\n");
+    exit(1);
+  }
   //shared memory
   int *data;
   int shmid;
@@ -162,6 +165,7 @@ int client_handshake(int *to_server) {
   
   
  printf("Current:%s \nlength: %lu\n", buff, strlen(buff));
+ 
 
   //ask client to guess a character
   printf("Guess a character:"); 
@@ -171,14 +175,26 @@ int client_handshake(int *to_server) {
   
   //process guess and get new state
   char after_guess[50];
+  char is_victory[50];
   strcpy(after_guess, check_guess(guessed, code_word, buff));
   if(strcmp(code_word, check_guess(guessed, code_word, buff)) ==0){
     printf("Congrats!! You won in %d rounds.\n", *data);
+    strcpy(is_victory, "done");
+     //shared memory to say victory => victory means value 1 is stored in shared memory 
+    int *data;
+    int shmid;
+    shmid = shmget(124, sizeof(int), IPC_CREAT | 0640);
+    data = shmat(shmid, 0, 0);
+    *data = *data +1;
+    shmdt(data); //detach
+    write(from_server, is_victory, 50);//added to slow down server
   }else{
     printf("After guessing: %s\n", check_guess(guessed, code_word, buff));
+    strcpy(is_victory, "not done");
   }
-  
 
+  
+  printf("status %s\n", is_victory);
   //write new state 
   int w_file;
 
@@ -211,7 +227,7 @@ int server_connect(int from_client) {
 
   // printf("Server received ACK, handshake complete\n");
   
-  char code_word[50] = "hello its me";
+  char code_word[50] = "orange";
   
 
   //reads from file
