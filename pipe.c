@@ -226,12 +226,12 @@ int server_connect(int from_client) {
   read(from_client, ack, 50);
 
   // printf("Server received ACK, handshake complete\n");
+
+
   
-  char code_word[50] = "orange";
+  char code_word[50] = "pineapple";
   
-
-
-
+  // char *code_word;
   int r_file = open("hangman.txt", O_RDONLY , 0);   
   if(r_file == -1) err();
 
@@ -249,7 +249,21 @@ int server_connect(int from_client) {
     // printf("read\n");
   } 
 
-  //shared memory
+printf("hi\n");
+  //shared memory for codeword
+  // char *data3;
+  // int shmid3;
+  // shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
+  // data3 = shmat(shmid3, 0, 0);
+  // for(int i =0; i<strlen(buff); i++){
+  //     code_word[i] = data3[i];
+  // }
+  // // printf("Round: %d\n", *data);
+  // shmdt(data3); //detach
+  // printf("sm3 got %s\n", code_word);
+
+
+  //shared memory for rounds
   int *data;
   int shmid;
   shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);

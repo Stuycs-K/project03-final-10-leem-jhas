@@ -22,9 +22,21 @@ int main() {
     char *code_word;
     strcpy(code_word, random_code_word());
     printf("code: %s\n", code_word);
-    code_word = "orange";
-    //shared memory for rounds
+    code_word = "pine apple";
 
+
+    //shared memory for codeword
+    // char *data3;
+    // int shmid3;
+    // shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
+    // data3 = shmat(shmid3, 0, 0);
+    // for(int i =0; i<strlen(code_word); i++){
+    //     data3[i] = code_word[i];
+    // }
+    // // printf("Round: %d\n", *data);
+    // shmdt(data3); //detach
+
+    //shared memory for rounds
     int *data;
     int shmid;
     shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
@@ -71,7 +83,7 @@ int main() {
             data2 = shmat(shmid2, 0, 0);  
             victory = *data2;
             shmdt(data2); //detach
-            
+
             to_client = server_connect(from_client);
             // printf("done\n");
              //checks shared memory for victory 
