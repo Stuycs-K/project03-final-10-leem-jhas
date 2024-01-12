@@ -15,16 +15,29 @@ void write_random_code_word(){
     if(w_file==-1)err();
     char list[5][50] = {"orange", "banana", "kiwi", "apple", "pineapple"};
     int length = sizeof(list) / sizeof(list[0]);
-    for(int i = 0; i < list; i++){
+    for(int i = 0; i < length; i++){
         write(w_file, list[i], 50);
     }
     
 }
 
-char* get_random_code_word(char* list){
-    srand(time(NULL));
-    int num = (rand() % (5));
-    char *output = list[num];
+char* get_code_word(char* list){
+    // printf("size: %d\n", size);
+    int r_file = open("codewords.txt", O_RDONLY , 0);   
+    if(r_file == -1) err();
+    lseek(r_file, -50, SEEK_END);
+    char buff[BUFFER_SIZE+1];
+        buff[BUFFER_SIZE]=0;
+
+        int bytes;
+        while((bytes = read(r_file, , BUFFER_SIZE))){
+            
+            if(bytes == -1)err();//all non 0 are true
+            printf("%s\n",buff);
+    
+        }  
+
+
 
 }
 int main() {
@@ -34,6 +47,8 @@ int main() {
     strcpy(code_word, random_code_word());
     printf("code: %s\n", code_word);
     code_word = "pine apple";
+    write_random_code_word();
+    get_code_word();
 
 
     //shared memory for codeword
