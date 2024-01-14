@@ -205,12 +205,12 @@ int client_handshake(int *to_server) {
     printf("Congrats!! You won in %d rounds.\n", *data);
     strcpy(is_victory, "done");
      //shared memory to say victory => victory means value 1 is stored in shared memory 
-    int *data;
-    int shmid;
-    shmid = shmget(124, sizeof(int), IPC_CREAT | 0640);
-    data = shmat(shmid, 0, 0);
-    *data = *data +1;
-    shmdt(data); //detach
+    int *data1;
+    int shmid1;
+    shmid1 = shmget(124, sizeof(int), IPC_CREAT | 0640);
+    data = shmat(shmid1, 0, 0);
+    *data1 = *data1 +1;
+    shmdt(data1); //detach
     write(from_server, is_victory, 50);//added to slow down server
   }else{
     printf("After guessing: %s\n", check_guess(guessed, code_word, buff));
@@ -251,14 +251,24 @@ int server_connect(int from_client) {
 
   // printf("Server received ACK, handshake complete\n");
 
+  //gets code word from shared memory
+  char code_word[50];
+
+  char *data3;
+  int shmid3;
+  shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
+  data3 = shmat(shmid3, 0, 0);
+  for(int i =0; i<strlen(data3); i++){
+      code_word[i] = data3[i];
+  }
+  shmdt(data3); //detach
+
+  printf("server read code_word: %s", code_word);
 
   
-  char code_word[50] = "pineapple";
-  
-  // char *code_word;
+
   int r_file = open("hangman.txt", O_RDONLY , 0);   
   if(r_file == -1) err();
-
 
   //char buff[256+1];
   //buff[50]=0;
@@ -266,25 +276,12 @@ int server_connect(int from_client) {
   //int bytes;
   char buff[256];
   ssize_t bytes;
-
+  //gets current state
   while((bytes = read(r_file, buff, sizeof(buff) - 1)) > 0){ 
     if(bytes == -1)err();//all non 0 are true
     buff[bytes] = '\0';
     // printf("read\n");
   } 
-
-printf("hi\n");
-  //shared memory for codeword
-  // char *data3;
-  // int shmid3;
-  // shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
-  // data3 = shmat(shmid3, 0, 0);
-  // for(int i =0; i<strlen(buff); i++){
-  //     code_word[i] = data3[i];
-  // }
-  // // printf("Round: %d\n", *data);
-  // shmdt(data3); //detach
-  // printf("sm3 got %s\n", code_word);
 
 
   //shared memory for rounds
