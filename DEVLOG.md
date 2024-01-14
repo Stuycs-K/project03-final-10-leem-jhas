@@ -42,6 +42,20 @@ Expanded description including how much time was spent on task.
 - client exits after winning - kind of successful?
 - ~2hr spent in total
 
+### 2024-01-11 -  
+- both server and client indicate when you have won
+- tried to get server to exit after client guessed - kind of unsuccessful 
+- shared memory indicates if there has been a win
+- client exits after winning - kind of successful?
+- ~2hr spent in total
+
+### 2024-01-12 - Shared memory and victory 
+- both server and client indicate when you have won
+- tried to get server to exit after client guessed - kind of unsuccessful 
+- shared memory indicates if there has been a win
+- client exits after winning - kind of successful?
+- ~2hr spent in total
+
 ## Player 2: Mary
 
 ### 2024-01-02 - Brief description
