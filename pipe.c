@@ -185,6 +185,10 @@ int client_handshake(int *to_server) {
   data = shmat(shmid, 0, 0);
   *data = * data + 1;
   printf("Round %d\n", *data);
+  int rounds = *data;
+  shmdt(data); //detach
+
+  
   
   
   
@@ -202,21 +206,22 @@ int client_handshake(int *to_server) {
   char is_victory[50];
   strcpy(after_guess, check_guess(guessed, code_word, buff));
   if(strcmp(code_word, check_guess(guessed, code_word, buff)) ==0){
-    printf("Congrats!! You won in %d rounds.\n", *data);
+    printf("Congrats!! You won in %d rounds.\n", rounds);
+
     strcpy(is_victory, "done");
      //shared memory to say victory => victory means value 1 is stored in shared memory 
     int *data1;
     int shmid1;
     shmid1 = shmget(124, sizeof(int), IPC_CREAT | 0640);
-    data = shmat(shmid1, 0, 0);
-    *data1 = *data1 +1;
+    data1 = shmat(shmid1, 0, 0);
+    *data1 = 1;
     shmdt(data1); //detach
     write(from_server, is_victory, 50);//added to slow down server
+    
   }else{
     printf("After guessing: %s\n", check_guess(guessed, code_word, buff));
     strcpy(is_victory, "not done");
   }
-
   
   printf("status %s\n", is_victory);
   //write new state 
@@ -227,7 +232,7 @@ int client_handshake(int *to_server) {
 
   write(w_file, check_guess(guessed, code_word, buff), strlen(check_guess(guessed, code_word, buff)));//writing to file 
   // printf("wrote %s file after guess\nlength: %lu\n", check_guess(guessed, code_word, buff), strlen(check_guess(guessed, code_word, buff)));
-  shmdt(data); //detach
+  
   close(from_server);
   return from_server;
 }

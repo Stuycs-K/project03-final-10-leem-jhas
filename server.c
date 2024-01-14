@@ -103,8 +103,9 @@ int main() {
     strcpy(modified_word,process(code_word));
     write(w_file,modified_word, 50);
     // printf("wrote %s\n", modified_word);
-    int victory;
+    printf("once\n");
     while(1){
+
         int to_client;
         int from_client;
         //from_client = server_handshake(&to_client);
@@ -116,20 +117,21 @@ int main() {
             exit(1);
         }
         else if(p == 0){ 
-            
+            to_client = server_connect(from_client);
             int *data2;
             int shmid2;
+            int victory;
             shmid2 = shmget(124, sizeof(int), IPC_CREAT | 0640);
             data2 = shmat(shmid2, 0, 0);  
             victory = *data2;
             shmdt(data2); //detach
-
-            to_client = server_connect(from_client);
+            printf("victory: %d\n", victory);
+            if(victory>0){
+                printf("You won!! Please do CONTROL C to start again.");
+            } 
             // printf("done\n");
              //checks shared memory for victory 
-            if(victory>0){
-                printf("You won!!");
-            } 
+            
             close(to_client);
             close(from_client);
             return p;
