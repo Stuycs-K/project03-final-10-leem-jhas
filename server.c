@@ -18,49 +18,61 @@ void write_random_code_word(){
     for(int i = 0; i < length; i++){
         write(w_file, list[i], 50);
     }
-    
 }
 
-char* get_code_word(char* list){
-    // printf("size: %d\n", size);
-    int r_file = open("codewords.txt", O_RDONLY , 0);   
-    if(r_file == -1) err();
-    lseek(r_file, -50, SEEK_END);
-    char buff[BUFFER_SIZE+1];
-        buff[BUFFER_SIZE]=0;
+char* get_code_word(){
+    int r_file = open("codewords.txt", O_RDONLY , 0);
+    char buff[50];
+    ssize_t bytes;
+    int total = 0;
 
-        int bytes;
-        while((bytes = read(r_file, , BUFFER_SIZE))){
-            
-            if(bytes == -1)err();//all non 0 are true
-            printf("%s\n",buff);
-    
-        }  
+    //get bytes of entire file
+    while((bytes = read(r_file, buff, sizeof(buff))) > 0){
+         // if(bytes == -1);//all non 0 are true
+         // buff[bytes] = '\0';
+         total += bytes;
+       }
+    // printf("bytes: %d\n", total);
 
+    //chooses random codeword
+    srand(time(NULL));
+    int num = (rand() % (total/50));
 
+    int r_file1 = open("codewords.txt", O_RDONLY , 0);
+    char buff1[50];
+    lseek(r_file1, num*50, SEEK_SET);
+    read(r_file1, buff1, sizeof(buff1));
+    printf("code: %s", buff1);
 
+    //wrote codeword to shared memory
+    char *data3;
+    int shmid3;
+    shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
+    data3 = shmat(shmid3, 0, 0);
+    //clear
+    printf("before: %s\n", data3);
+    for(int i =0; i<strlen(data3); i++){
+        data3[i] = '\0';
+    }
+    printf("after: %s\n", data3);
+    for(int i =0; i<strlen(buff1); i++){
+        data3[i] = buff1[i];
+    }
+    printf("buff: %s\n", buff1);
+    printf("after 2: %s\n", data3);
+    // printf("Round: %d\n", *data);
+    shmdt(data3); //detach
+
+    return buff1;
 }
 int main() {
     signal(SIGINT,sighandler);
 
+    //get code_word from function
     char *code_word;
-    strcpy(code_word, random_code_word());
-    printf("code: %s\n", code_word);
-    code_word = "pine apple";
     write_random_code_word();
-    get_code_word();
-
-
-    //shared memory for codeword
-    // char *data3;
-    // int shmid3;
-    // shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
-    // data3 = shmat(shmid3, 0, 0);
-    // for(int i =0; i<strlen(code_word); i++){
-    //     data3[i] = code_word[i];
-    // }
-    // // printf("Round: %d\n", *data);
-    // shmdt(data3); //detach
+    strcpy(code_word, get_code_word());
+    printf("this is the code-word%s\n", code_word);
 
     //shared memory for rounds
     int *data;
@@ -85,11 +97,8 @@ int main() {
     if(w_file==-1)err();
     // printf("created file\n");
     //write dashes to textfile
-    printf("hello\n");
     char modified_word[50];
-    printf("hello\n");
     strcpy(modified_word,process(code_word));
-    printf("hey\n");
     write(w_file,modified_word, 50);
     // printf("wrote %s\n", modified_word);
     int victory;
@@ -129,4 +138,6 @@ int main() {
     shmctl(shmid, IPC_RMID, 0); //remove the segment
     shmid1 = shmget(124, sizeof(int), IPC_CREAT | 0640);
     shmctl(shmid1, IPC_RMID, 0); //remove the segment
+    int shmid3 = shmget(125, sizeof(int), IPC_CREAT | 0640);
+    shmctl(shmid3, IPC_RMID, 0); //remove the segment
 } 
