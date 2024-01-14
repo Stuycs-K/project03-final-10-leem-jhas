@@ -42,24 +42,26 @@ char* get_code_word(){
     char buff1[50];
     lseek(r_file1, num*50, SEEK_SET);
     read(r_file1, buff1, sizeof(buff1));
-    printf("code: %s", buff1);
+    printf("code: %s\n", buff1);
 
     //wrote codeword to shared memory
     char *data3;
     int shmid3;
     shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
     data3 = shmat(shmid3, 0, 0);
-    //clear
-    printf("before: %s\n", data3);
-    for(int i =0; i<strlen(data3); i++){
-        data3[i] = '\0';
-    }
-    printf("after: %s\n", data3);
+    printf("data3 before: %s\n", data3);
     for(int i =0; i<strlen(buff1); i++){
         data3[i] = buff1[i];
     }
-    printf("buff: %s\n", buff1);
-    printf("after 2: %s\n", data3);
+    int diff = strlen("pineapple") - strlen(buff1);  
+    if(diff >0){ 
+        for(int j = strlen(buff1); j <diff+strlen(buff1) ; j++){
+            data3[j] = '\0';
+        }
+    }
+    printf("data3 after: %s\n", data3);
+    printf("buff1: %s\n", buff1);
+   
     // printf("Round: %d\n", *data);
     shmdt(data3); //detach
 
@@ -72,7 +74,7 @@ int main() {
     char *code_word;
     write_random_code_word();
     strcpy(code_word, get_code_word());
-    printf("this is the code-word%s\n", code_word);
+    printf("this is the code_word: %s\n", code_word);
 
     //shared memory for rounds
     int *data;
