@@ -8,7 +8,6 @@ static void sighandler(int signo) {
       exit(1);
     }
 }
-
 char* random_code_word(){
     char list[5][50] = {"orange", "banana", "kiwi", "apple", "pineapple"};
     srand(time(NULL));
@@ -19,11 +18,11 @@ char* random_code_word(){
 int main() {
     signal(SIGINT,sighandler);
 
-    char *code_word;
-    strcpy(code_word, random_code_word());
+    char code_word[50] = "pineapple";
+    //strcpy(code_word, rando m_code_word());
+    //code_word = "pine apple";
+    //code_word = "pineapple";
     printf("code: %s\n", code_word);
-    code_word = "pine apple";
-
 
     //shared memory for codeword
     // char *data3;

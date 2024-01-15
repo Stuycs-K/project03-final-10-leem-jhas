@@ -151,83 +151,89 @@ int client_handshake(int *to_server) {
 
   // printf("Client sending ACK\n");
   write(wkp, ACK, 50);
+
+  int victory = 0; //victory is 0 means no victory, victory is 1 is victory
+  while(victory == 0){
+
   
-  //get code word from client
-  char code_word[50];
-  read(from_server, code_word, 50);
+    //get code word from client
+    char code_word[50];
+    read(from_server, code_word, 50);
 
 
-  //read last line and get current
-  int r_file = open("hangman.txt", O_RDONLY , 0);   
-  if(r_file == -1) err();
+    //read last line and get current
+    int r_file = open("hangman.txt", O_RDONLY , 0);   
+    if(r_file == -1) err();
 
 
-  //char buff[256+1];
-  //buff[50]=0;
+    //char buff[256+1];
+    //buff[50]=0;
 
-  //int bytes;
-  char buff[50];
-  ssize_t bytes;
+    //int bytes;
+    char buff[50];
+    ssize_t bytes;
 
-  while((bytes = read(r_file, buff, sizeof(buff)-1)) > 0){ 
-    if(bytes == -1)err();//all non 0 are true
-    buff[bytes] = '\0';
-    // printf("read\n");
-  } 
-  if(strcmp(code_word, buff)==0){
-    printf("NO STOP YOU HAVE ALREADY WON!!!!!\n");
-    exit(1);
-  }
-  //shared memory
-  int *data;
-  int shmid;
-  shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
-  data = shmat(shmid, 0, 0);
-  *data = * data + 1;
-  printf("Round %d\n", *data);
-  
-  
-  
- printf("Current:%s \nlength: %lu\n", buff, strlen(buff));
- 
-
-  //ask client to guess a character
-  printf("Guess a character:"); 
-  char line_buff[256];
-  fgets(line_buff,255,stdin);
-  char *guessed = line_buff;
-  
-  //process guess and get new state
-  char after_guess[50];
-  char is_victory[50];
-  strcpy(after_guess, check_guess(guessed, code_word, buff));
-  if(strcmp(code_word, check_guess(guessed, code_word, buff)) ==0){
-    printf("Congrats!! You won in %d rounds.\n", *data);
-    strcpy(is_victory, "done");
-     //shared memory to say victory => victory means value 1 is stored in shared memory 
+    while((bytes = read(r_file, buff, sizeof(buff)-1)) > 0){ 
+      if(bytes == -1)err();//all non 0 are true
+      buff[bytes] = '\0';
+      // printf("read\n");
+    } 
+    if(strcmp(code_word, buff)==0){
+      printf("NO STOP YOU HAVE ALREADY WON!!!!!\n");
+      exit(1);
+    }
+    //shared memory
     int *data;
     int shmid;
-    shmid = shmget(124, sizeof(int), IPC_CREAT | 0640);
+    shmid = shmget(123, sizeof(int), IPC_CREAT | 0640);
     data = shmat(shmid, 0, 0);
-    *data = *data +1;
-    shmdt(data); //detach
-    write(from_server, is_victory, 50);//added to slow down server
-  }else{
-    printf("After guessing: %s\n", check_guess(guessed, code_word, buff));
-    strcpy(is_victory, "not done");
-  }
-
+    *data = * data + 1;
+    printf("Round %d\n", *data);
+    
+    
+    
+    printf("Current:%s \nlength: %lu\n", buff, strlen(buff));
   
-  printf("status %s\n", is_victory);
-  //write new state 
-  int w_file;
 
-  w_file = open("hangman.txt", O_TRUNC|O_WRONLY , 0611);
-  if(w_file==-1)err();
+    //ask client to guess a character
+    printf("Guess a character:"); 
+    char line_buff[256];
+    fgets(line_buff,255,stdin);
+    char *guessed = line_buff;
+    
+    //process guess and get new state
+    char after_guess[50];
+    char is_victory[50];
+    strcpy(after_guess, check_guess(guessed, code_word, buff));
+    if(strcmp(code_word, check_guess(guessed, code_word, buff)) ==0){
+      printf("Congrats!! You won in %d rounds.\n", *data);
+      strcpy(is_victory, "done");
+      //shared memory to say victory => victory means value 1 is stored in shared memory 
+      int *data;
+      int shmid;
+      shmid = shmget(124, sizeof(int), IPC_CREAT | 0640);
+      data = shmat(shmid, 0, 0);
+      *data = *data +1;
+      shmdt(data); //detach
+      write(from_server, is_victory, 50);//added to slow down server
+      victory++;
+    }else{
+      printf("After guessing: %s\n", check_guess(guessed, code_word, buff));
+      strcpy(is_victory, "not done");
+    }
 
-  write(w_file, check_guess(guessed, code_word, buff), strlen(check_guess(guessed, code_word, buff)));//writing to file 
-  // printf("wrote %s file after guess\nlength: %lu\n", check_guess(guessed, code_word, buff), strlen(check_guess(guessed, code_word, buff)));
-  shmdt(data); //detach
+    
+    printf("status %s\n", is_victory);
+    //write new state 
+    int w_file;
+
+    w_file = open("hangman.txt", O_TRUNC|O_WRONLY , 0611);
+    if(w_file==-1)err();
+
+    write(w_file, check_guess(guessed, code_word, buff), strlen(check_guess(guessed, code_word, buff)));//writing to file 
+    // printf("wrote %s file after guess\nlength: %lu\n", check_guess(guessed, code_word, buff), strlen(check_guess(guessed, code_word, buff)));
+    shmdt(data); //detach
+  }
   close(from_server);
   return from_server;
 }
