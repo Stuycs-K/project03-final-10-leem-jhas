@@ -18,6 +18,7 @@ void write_random_code_word(){
     for(int i = 0; i < length; i++){
         write(w_file, list[i], 50);
     }
+    close(w_file);
 }
 
 char* get_code_word(){
@@ -33,7 +34,7 @@ char* get_code_word(){
          total += bytes;
        }
     // printf("bytes: %d\n", total);
-
+    close(r_file); 
     //chooses random codeword
     srand(time(NULL));
     int num = (rand() % (total/50));
@@ -43,6 +44,7 @@ char* get_code_word(){
     lseek(r_file1, num*50, SEEK_SET);
     read(r_file1, buff1, sizeof(buff1));
     printf("code: %s\n", buff1);
+    close(r_file1); 
 
     //wrote codeword to shared memory
     char *data3;
@@ -67,12 +69,41 @@ char* get_code_word(){
 
     return buff1;
 }
+void add_to_bank(char * new_word){
+    int w_file;
+    w_file = open("codewords.txt", O_WRONLY|O_APPEND , 0611);
+    if(w_file==-1)err();
+    char add[50];
+    strcpy(add, new_word);
+    for(int i = strlen(new_word); i<50;i++){
+        add[i]='\0';
+    }
+    write(w_file, add, 50);
+    close(w_file);
+}
 int main() {
     signal(SIGINT,sighandler);
+    write_random_code_word();
+    printf("Would you like to play or add a codeword to the bank?[play/add]: \n");
+    char line_buff[50];
+    fgets(line_buff, 50, stdin);
+    
+    line_buff[strlen(line_buff)-1] = '\0';
+
+    if(strcmp(line_buff, "add")==0){
+        printf("What word would you like to add?: \n");
+        char line_buff1[50];
+        fgets(line_buff1, 50, stdin);
+        line_buff1[strlen(line_buff1)-1] = '\0';
+        printf("adding %s\n", line_buff1);
+        add_to_bank(line_buff1);
+    }
+  
+    printf("ONTO THE GAME: WELCOME TO HANGMAN!!\n");
+
 
     //get code_word from function
-    char *code_word;
-    write_random_code_word();
+    char code_word[50];
     strcpy(code_word, get_code_word());
     printf("this is the code_word: %s\n", code_word);
 
@@ -102,6 +133,7 @@ int main() {
     char modified_word[50];
     strcpy(modified_word,process(code_word));
     write(w_file,modified_word, 50);
+    close(w_file);
     // printf("wrote %s\n", modified_word);
     printf("once\n");
     while(1){
