@@ -327,9 +327,9 @@ int multi_client_create(char *room_code) {
   shmid = shmget(SHMEM, sizeof(int), 0);
   semop(semd, &sb, 1);
     
-  printf("Attempting to open room...\n");
+  printf("Attempting to open resource...\n");
 
-  int r_story = open("story.txt", O_RDONLY);
+  int r_story = open(room_code, O_RDONLY);
   if (r_story == -1){
     perror("Error: Cannot open file\n");
     exit(1);
@@ -350,10 +350,10 @@ int multi_client_create(char *room_code) {
     exit(1);
   }
   buffer[bytes] = '\0';
-  //printf("Last line added to the file: %s\n", buffer);
+  printf("Last line added to the file: %s\n", buffer);
   //if (*file_size == 0)
 
-  printf("Create a phrase: ");
+  printf("Next line to be added to the story: \n");
   fgets(buffer, sizeof(buffer), stdin);
   //char *code_word = "pineapple";
   char modified_word[50];
@@ -363,7 +363,7 @@ int multi_client_create(char *room_code) {
 
   close(r_story);
 
-  w_story = open("story.txt", O_WRONLY | O_APPEND);
+  w_story = open(room_code, O_WRONLY | O_APPEND);
   if (w_story == -1){
     perror("Error: Cannot open file\n");
     exit(1);
@@ -424,7 +424,7 @@ int multi_client_guess(char *join_code) {
   printf("Current State: %s\n", buffer);
   if (*file_size == 0)
 
-  printf("New Guess: \n");
+  printf("Your Guess: \n");
   char guessed[256];
   fgets(guessed,sizeof(guessed),stdin);
 
@@ -439,7 +439,7 @@ int multi_client_guess(char *join_code) {
   //printf("code: %s, guess: %s, prev line: %s, new line: %s\n", code_word, guessed, buffer, after_guess);
   //printf("size of guess: %d\n", strlen(guessed));
 
-  int w_story = open("story.txt", O_WRONLY | O_APPEND);
+  int w_story = open(join_code, O_WRONLY | O_APPEND);
   if (w_story == -1){
     perror("Error: Cannot open file\n");
     exit(1);
