@@ -40,33 +40,43 @@ char* get_code_word(){
     int num = (rand() % (total/50));
 
     int r_file1 = open("codewords.txt", O_RDONLY , 0);
-    char buff1[50];
+    char* buff1 = (char*)malloc(50 * sizeof(char)); 
     lseek(r_file1, num*50, SEEK_SET);
     read(r_file1, buff1, sizeof(buff1));
     printf("code: %s\n", buff1);
     close(r_file1); 
 
     //wrote codeword to shared memory
+    
+    // int a;
+    // int w_file1;
+    // w_file1 = open("codewordfinal.txt", O_WRONLY | O_TRUNC | O_CREAT, 0611);
+    // if(w_file1==-1)err();
+    // write(w_file1, buff1, 50);
+    // close(w_file1);
     char *data3;
     int shmid3;
     shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
+    printf("hi\n");
     data3 = shmat(shmid3, 0, 0);
-    printf("data3 before: %s\n", data3);
+    printf("hi\n");
+    // a = data3;
+    // printf("data3 before: %s\n", a);
     for(int i =0; i<strlen(buff1); i++){
         data3[i] = buff1[i];
     }
+    printf("hi\n");
     int diff = strlen("pineapple") - strlen(buff1);  
     if(diff >0){ 
         for(int j = strlen(buff1); j <diff+strlen(buff1) ; j++){
             data3[j] = '\0';
         }
     }
-    printf("data3 after: %s\n", data3);
-    printf("buff1: %s\n", buff1);
-   
+    // printf("data3 after: %s\n", data3);
+    // printf("buff1: %s\n", buff1);
+
     // printf("Round: %d\n", *data);
     shmdt(data3); //detach
-
     return buff1;
 }
 void add_to_bank(char * new_word){
@@ -84,27 +94,30 @@ void add_to_bank(char * new_word){
 int main(int argc, char *argv[]) {
     signal(SIGINT,sighandler);
     write_random_code_word();
-    printf("Would you like to play or add a codeword to the bank?[play/add]: \n");
-    char line_buff[50];
-    fgets(line_buff, 50, stdin);
+    // printf("Would you like to play or add a codeword to the bank?[play/add]: \n");
+    // char line_buff[50];
+    // fgets(line_buff, 50, stdin);
     
-    line_buff[strlen(line_buff)-1] = '\0';
+    // line_buff[strlen(line_buff)-1] = '\0';
 
-    if(strcmp(line_buff, "add")==0){
-        printf("What word would you like to add?: \n");
-        char line_buff1[50];
-        fgets(line_buff1, 50, stdin);
-        line_buff1[strlen(line_buff1)-1] = '\0';
-        printf("adding %s\n", line_buff1);
-        add_to_bank(line_buff1);
-    }
+    // if(strcmp(line_buff, "add")==0){
+    //     printf("What word would you like to add?: \n");
+    //     char line_buff1[50];
+    //     fgets(line_buff1, 50, stdin);
+    //     line_buff1[strlen(line_buff1)-1] = '\0';
+    //     printf("adding %s\n", line_buff1);
+    //     add_to_bank(line_buff1);
+    // }
   
-    printf("ONTO THE GAME: WELCOME TO HANGMAN!!\n");
+    // printf("ONTO THE GAME: WELCOME TO HANGMAN!!\n");
 
 
     //get code_word from function
-    char code_word[50];
+    char code_word[51];
+    printf("test\n");
     strcpy(code_word, get_code_word());
+    // err();
+    printf("test\n");
     printf("this is the code_word: %s\n", code_word);
 
     //shared memory for rounds
@@ -174,6 +187,6 @@ int main(int argc, char *argv[]) {
     shmctl(shmid, IPC_RMID, 0); //remove the segment
     shmid1 = shmget(124, sizeof(int), IPC_CREAT | 0640);
     shmctl(shmid1, IPC_RMID, 0); //remove the segment
-    int shmid3 = shmget(125, sizeof(int), IPC_CREAT | 0640);
-    shmctl(shmid3, IPC_RMID, 0); //remove the segment
+    // int shmid3 = shmget(125, sizeof(int), IPC_CREAT | 0640);
+    // shmctl(shmid3, IPC_RMID, 0); //remove the segment
 } 
