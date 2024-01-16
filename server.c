@@ -15,25 +15,12 @@ char* random_code_word(){
     char *output = list[num];
     return output;
 }
-int main() {
+int main(int argc, char *argv[]) {
     signal(SIGINT,sighandler);
 
     char code_word[50] = "pineapple";
-    //strcpy(code_word, rando m_code_word());
-    //code_word = "pine apple";
-    //code_word = "pineapple";
-    printf("code: %s\n", code_word);
 
-    //shared memory for codeword
-    // char *data3;
-    // int shmid3;
-    // shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
-    // data3 = shmat(shmid3, 0, 0);
-    // for(int i =0; i<strlen(code_word); i++){
-    //     data3[i] = code_word[i];
-    // }
-    // // printf("Round: %d\n", *data);
-    // shmdt(data3); //detach
+    printf("code: %s\n", code_word);
 
     //shared memory for rounds
     int *data;

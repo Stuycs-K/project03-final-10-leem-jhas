@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
 #include <sys/shm.h> 
 #include <unistd.h>
 #include <signal.h>
@@ -25,9 +27,13 @@
 #define MESSAGE 3
 #define EXIT 4
 
+#define KEY 35782
+#define SHMEM 78001
 
 int server_handshake(int *to_client);
 int client_handshake(int *to_server);
+int multi_client_create();
+int multi_client_guess();
 
 //for basic & persistent servers
 int server_connect(int from_client);
