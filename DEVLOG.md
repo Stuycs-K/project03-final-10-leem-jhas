@@ -72,13 +72,40 @@ Expanded description including how much time was spent on task.
 - File setup for client-server connection
 - Have server send code word to client
 - Created function that replaces code word with dashes
-- ~1hr spent in total
+- ~1hrs spent in total
 
 ### 2024-01-05 - Dashes
 - Tried to get dashes to work consistently and correctly - unfinished
-- ~2hr spent in total
+- ~2hrs spent in total
 
 ### 2024-01-08 - Dashes and client guesses
 - Dashes appear on both client and server without extra characters
-- server now accepts client guesses with length greater than 1
-- ~2hr spent in total
+- modified check_guess() so server now accepts client guesses with length greater than 1
+- ~2hrs spent in total
+
+### 2024-01-09 - String issues on lab machines
+- Attempted to resolve string issues/seg faults that appeared on lab machine
+- ~1hr spent in total
+
+### 2024-01-10 - String issues on lab machines
+- finally fixed char* process() function to work on lab machine
+- ~1hr spent in total
+
+### 2024-01-11 - Dashes and client guesses
+- Started working on allowing multiple clients using pipes
+- ~50 min spent in total
+
+### 2024-01-12/13 - sick
+
+### 2024-01-14 - Dashes and client guesses
+- Attempted to create multiplayer mode using pipes
+- Transitioned into using semaphores instead
+- ~3hrs spent in total
+
+### 2024-01-15 - Dashes and client guesses
+- Created "solo" and "multi" modes on client ("multi" uses semaphores)
+- Looped "solo" mode so client doesn't have to repeatedly run commands
+- Client (host) can create a game room and choose a word/phrase (to be guessed)
+- Client (player) can join a game room using a join code, and make guesses
+    - current state includes the guesses of other clients (players)
+- ~11hrs spent in total

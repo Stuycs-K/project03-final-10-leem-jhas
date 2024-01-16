@@ -11,18 +11,14 @@ char *process(char *input){
     return NULL;
   }
 
-  //char* output = calloc(sizeof(input),sizeof(char));
   char *output = malloc(sizeof(input)+1);
-  //int len = strlen(input);
   strcpy(output, input);
-  //printf("input: %s, output: %s, size: \n",input, output);
+
   if(output != NULL){
     char* curr = output;
-    //int i = 0;
     while(*curr != '\0' && *curr != '\n'){
       *curr = '-'; 
       curr++;
-      //i++;
     }
     *curr = '\0';
   }
@@ -36,7 +32,7 @@ char *check_guess(char *guess, char *code_word, char* current){
   }
   int code_len = strlen(code_word);
   int guess_len = strlen(guess)-1;
-  //char output[code_len];
+
   char* output = malloc(sizeof(code_word)+1);
   if(guess_len == 1){
     for(int i = 0; i < code_len; i++){
@@ -78,13 +74,13 @@ char *check_guess(char *guess, char *code_word, char* current){
 int server_setup() {
   int from_client = 0;
 
-  // printf("Server making the pipe\n");
+  // Server making the pipe
 
-  // printf("Server opening the pipe\n");
+  // Server opening the pipe
   mkfifo(WKP, 0666);
   from_client = open(WKP, O_RDONLY);
 
-  // printf("Server removing the pipe\n");
+  // Server removing the pipe
 
   remove(WKP);
 
@@ -94,23 +90,19 @@ int server_setup() {
 int server_handshake(int *to_client) {
   int from_client = server_setup();
 
-  // printf("Server reading SYN (the pid)\n");
+  // Server reading SYN (the pid)
   char private_name[50];
   read(from_client, private_name, 50);
 
-  // printf("Server opening the Private Pipe\n");
+  // Server opening the Private Pipe
   int pp = open(private_name, O_WRONLY);
 
-  // printf("Server sending SYN_ACK\n");
+  // Server sending SYN_ACK
   write(pp, SYN_ACK, 50);
 
-  // printf("Server reading final ACK\n");
+  // Server reading final ACK;
   char ack[50];
   read(from_client, ack, 50);
-
-  if(strcmp(ack,ACK)==0){
-    // printf("Server received ACK, handshake complete\n");
-  }
 
   return from_client;
 }
@@ -118,10 +110,9 @@ int server_handshake(int *to_client) {
 int client_handshake(int *to_server) {
   int from_server;
 
+  // Client making Private pipe
   char* private_name = calloc(50, sizeof(char));
   sprintf(private_name, "%d", getpid());
-
-  // Client making Private pipe
 
   // Client opening WKP
   int wkp = open(WKP, O_WRONLY);
@@ -147,16 +138,10 @@ int client_handshake(int *to_server) {
   char code_word[50];
   read(from_server, code_word, 50);
 
-
   //read last line and get current
   int r_file = open("hangman.txt", O_RDONLY , 0);   
   if(r_file == -1) err();
 
-
-  //char buff[256+1];
-  //buff[50]=0;
-
-  //int bytes;
   char buff[50];
   ssize_t bytes;
 
@@ -240,7 +225,7 @@ int server_connect(int from_client) {
   char ack[50];
   read(from_client, ack, 50);
 
-  // printf("Server received ACK, handshake complete\n");
+  //Server received ACK, handshake complete
 
   //gets code word from shared memory
   char code_word[50];
@@ -260,17 +245,12 @@ int server_connect(int from_client) {
   int r_file = open("hangman.txt", O_RDONLY , 0);   
   if(r_file == -1) err();
 
-  //char buff[256+1];
-  //buff[50]=0;
-
-  //int bytes;
   char buff[256];
   ssize_t bytes;
   //gets current state
   while((bytes = read(r_file, buff, sizeof(buff) - 1)) > 0){ 
     if(bytes == -1)err();//all non 0 are true
     buff[bytes] = '\0';
-    // printf("read\n");
   } 
 
   //shared memory for rounds
@@ -297,9 +277,7 @@ int server_connect(int from_client) {
   return to_client;
 }
 
-
 /////////// MULTI-CLIENTS
-
 
 int multi_client_create(char *room_code) {
   int semd = semget(KEY, 1, IPC_CREAT | 0644);
