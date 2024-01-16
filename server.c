@@ -49,34 +49,34 @@ char* get_code_word(){
     //wrote codeword to shared memory
     
     // int a;
-    int w_file1;
-    w_file1 = open("codewordfinal.txt", O_WRONLY | O_TRUNC | O_CREAT, 0611);
-    if(w_file1==-1)err();
-    write(w_file1, buff1, 50);
-    close(w_file1);
-                                                // char *data3;
-                                                // int shmid3;
-                                                // shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
-                                                // printf("hi\n");
-                                                // data3 = shmat(shmid3, 0, 0);
-                                                // printf("hi\n");
-                                                // // a = data3;
-                                                // // printf("data3 before: %s\n", a);
-                                                // for(int i =0; i<strlen(buff1); i++){
-                                                //     data3[i] = buff1[i];
-                                                // }
-                                                // printf("hi\n");
-                                                // int diff = strlen("pineapple") - strlen(buff1);  
-                                                // if(diff >0){ 
-                                                //     for(int j = strlen(buff1); j <diff+strlen(buff1) ; j++){
-                                                //         data3[j] = '\0';
-                                                //     }
-                                                // }
-                                                // // printf("data3 after: %s\n", data3);
-                                                // // printf("buff1: %s\n", buff1);
-                                            
-                                                // // printf("Round: %d\n", *data);
-                                                // shmdt(data3); //detach
+    // int w_file1;
+    // w_file1 = open("codewordfinal.txt", O_WRONLY | O_TRUNC | O_CREAT, 0611);
+    // if(w_file1==-1)err();
+    // write(w_file1, buff1, 50);
+    // close(w_file1);
+    char *data3;
+    int shmid3;
+    shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
+    printf("hi\n");
+    data3 = shmat(shmid3, 0, 0);
+    printf("hi\n");
+    // a = data3;
+    // printf("data3 before: %s\n", a);
+    for(int i =0; i<strlen(buff1); i++){
+        data3[i] = buff1[i];
+    }
+    printf("hi\n");
+    int diff = strlen("pineapple") - strlen(buff1);  
+    if(diff >0){ 
+        for(int j = strlen(buff1); j <diff+strlen(buff1) ; j++){
+            data3[j] = '\0';
+        }
+    }
+    // printf("data3 after: %s\n", data3);
+    // printf("buff1: %s\n", buff1);
+
+    // printf("Round: %d\n", *data);
+    shmdt(data3); //detach
     return buff1;
 }
 void add_to_bank(char * new_word){
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
     char code_word[51];
     printf("test\n");
     strcpy(code_word, get_code_word());
-    err();
+    // err();
     printf("test\n");
     printf("this is the code_word: %s\n", code_word);
 
