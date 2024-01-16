@@ -287,7 +287,7 @@ int server_connect(int from_client) {
 /////////// MULTI-CLIENTS
 
 
-int multi_client_create() {
+int multi_client_create(char *room_code) {
   int semd = semget(KEY, 1, IPC_CREAT | 0644);
   if (semd == -1) {
     perror("Error: Cannot create semaphore.\n");
@@ -303,7 +303,12 @@ int multi_client_create() {
     exit(1);
   }
 
-  int w_story = open("story.txt", O_CREAT | O_TRUNC, 0644);
+  printf("%s",room_code);
+  room_code[strlen(room_code)-1] = '\0'; // removing '\n' from filename
+  strcat(room_code,".txt");
+  printf("%s",room_code);
+
+  int w_story = open(room_code, O_CREAT | O_TRUNC, 0644);
   if (w_story == -1){
     perror("Error: Cannot open file\n");
     exit(1);
@@ -322,7 +327,7 @@ int multi_client_create() {
   shmid = shmget(SHMEM, sizeof(int), 0);
   semop(semd, &sb, 1);
     
-  printf("Attempting to open resource...\n");
+  printf("Attempting to open room...\n");
 
   int r_story = open("story.txt", O_RDONLY);
   if (r_story == -1){
@@ -345,10 +350,10 @@ int multi_client_create() {
     exit(1);
   }
   buffer[bytes] = '\0';
-  printf("Last line added to the file: %s\n", buffer);
+  //printf("Last line added to the file: %s\n", buffer);
   //if (*file_size == 0)
 
-  printf("Next line to be added to the story: \n");
+  printf("Create a phrase: ");
   fgets(buffer, sizeof(buffer), stdin);
   //char *code_word = "pineapple";
   char modified_word[50];
@@ -379,7 +384,7 @@ int multi_client_create() {
   return 0;
 }
 
-int multi_client_guess() {
+int multi_client_guess(char *join_code) {
   struct sembuf sb;
   sb.sem_num = 0;
   sb.sem_flg = SEM_UNDO;
@@ -389,11 +394,14 @@ int multi_client_guess() {
   int shmid = shmget(SHMEM, sizeof(int), 0);
   semop(semd, &sb, 1);
     
-  printf("Attempting to open resource...\n");
+  printf("Attempting to join room...\n");
 
-  int r_story = open("story.txt", O_RDONLY);
+  join_code[strlen(join_code)-1] = '\0'; // removing '\n' from filename
+  strcat(join_code,".txt");
+
+  int r_story = open(join_code, O_RDONLY);
   if (r_story == -1){
-    perror("Error: Cannot open file\n");
+    perror("This room does not exist\n");
     exit(1);
   }
 

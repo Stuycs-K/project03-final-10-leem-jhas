@@ -32,8 +32,8 @@
 
 int server_handshake(int *to_client);
 int client_handshake(int *to_server);
-int multi_client_create();
-int multi_client_guess();
+int multi_client_create(char *room_code);
+int multi_client_guess(char *join_code);
 
 //for basic & persistent servers
 int server_connect(int from_client);

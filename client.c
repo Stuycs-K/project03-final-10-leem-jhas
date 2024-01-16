@@ -10,11 +10,17 @@ int main(int argc, char *argv[]) {
   }
   else if (strcmp(argv[1], "multi_create") == 0) {
     //from_server = multi_client_handshake( &to_server );
-    multi_client_create();
+    char room_code[256];
+    printf("Room Code: ");
+    fgets(room_code, sizeof(room_code), stdin);
+    multi_client_create(room_code);
   }
   else if (strcmp(argv[1], "multi_guess") == 0) {
     //from_server = multi_client_handshake( &to_server );
-    multi_client_guess();
+    char join_code[256];
+    printf("Room Code: ");
+    fgets(join_code, sizeof(join_code), stdin);
+    multi_client_guess(join_code);
   }
 
 }
