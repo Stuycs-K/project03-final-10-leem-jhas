@@ -48,6 +48,16 @@ char *check_guess(char *guess, char *code_word, char* current){
       }
     }
   }
+  else if(guess_len == 2 && (guess[1] == '\n' || guess[1] == '\0')){
+    for(int i = 0; i < code_len; i++){
+      if(code_word[i] == guess[0]){
+        output[i] = guess[0];
+      }
+      else{
+        output[i] = current[i];
+      }
+    }
+  }
   else{
     for(int i = 0; i < guess_len; i++){
       if(code_word[i] == guess[i]){
@@ -285,65 +295,7 @@ int server_connect(int from_client) {
 
 
 
-
-
-
-
-
-
 int multi_client_create() {
-  /*struct sembuf sb;
-  sb.sem_num = 0;
-  sb.sem_flg = SEM_UNDO;
-  sb.sem_op = -1;
-
-  int semd = semget(KEY, 1, IPC_CREAT | 0644);
-  if (semd == -1) {
-    perror("Error: Cannot create semaphore.\n");
-    exit(1);
-  }
-  union semun us;
-  us.val = 1;
-  semctl(semd, 0, SETVAL, us.val);
-
-  int shmid = shmget(SHMEM, sizeof(off_t), IPC_CREAT | 0644);
-  if (shmid == -1) {
-    perror("Error: Cannot create shared memory\n");
-    exit(1);
-  }
-
-  semop(semd, &sb, 1);
-
-  int w_story = open("story.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-  if (w_story == -1){
-    perror("Error: Cannot open file\n");
-    exit(1);
-  }
-
-  int *file_size = shmat(shmid, 0, 0);
-  if (*file_size == (off_t)-1){
-    perror("Error: Cannot add shared memory\n");
-    exit(1);
-  }
-
-  //ask client (group creator) to enter their code word
-  //fgets(buffer, sizeof(buffer), stdin);
-  char *code_word = "pineapple";
-  char modified_word[50];
-  strcpy(modified_word,process(code_word));
-  //modified_word[strlen(code_word)] = '\0';
-  *file_size = strlen(modified_word);
-  if (write(w_story, modified_word, sizeof(modified_word)) == -1){
-    perror("Error: Cannot write to file\n");
-    exit(1);
-  }
-  sb.sem_op = 1;
-  if (semop(semd, &sb, 1) == -1){
-    perror("Error: Cannot release semaphore\n");
-    exit(1);
-  }
-
-  close(w_story);*/
   int semd = semget(KEY, 1, IPC_CREAT | 0644);
   if (semd == -1) {
     perror("Error: Cannot create semaphore.\n");
@@ -481,24 +433,33 @@ int multi_client_guess() {
   if (*file_size == 0)
 
   printf("Next line to be added to the story: \n");
-  fgets(buffer, sizeof(buffer), stdin);
+  //char line_buff[256];
+  char guessed[256];
+  fgets(guessed,sizeof(guessed),stdin);
+ // char *guessed = line_buff;
 
   *file_size = strlen(buffer);
 
   close(r_story);
 
+  char *code_word = "pineapple";
+  char after_guess[50];
+  strcpy(after_guess, check_guess(guessed, code_word, buffer));
+
+  printf("code: %s, guess: %s, prev line: %s, new line: %s\n", code_word, guessed, buffer, after_guess);
+  printf("size of guess: %d\n", strlen(guessed));
 
   int w_story = open("story.txt", O_WRONLY | O_APPEND);
   if (w_story == -1){
     perror("Error: Cannot open file\n");
     exit(1);
   }
-  if (write(w_story, buffer, strlen(buffer)) == -1){
+  if (write(w_story, after_guess, strlen(after_guess)) == -1){
     perror("Error: Cannot write to file\n");
     exit(1);
   }
 
-  //sb.sem_op = 1;
+  sb.sem_op = 1;
   if (semop(semd, &sb, 1) == -1){
     perror("Error: Cannot release semaphore\n");
     exit(1);
