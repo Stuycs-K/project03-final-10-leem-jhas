@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
 
 
     //get code_word from function
-    char code_word[50];
+    char code_word[51];
     printf("test\n");
     strcpy(code_word, get_code_word());
     err();
