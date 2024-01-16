@@ -116,6 +116,7 @@ int main(int argc, char *argv[]) {
     char code_word[50];
     printf("test\n");
     strcpy(code_word, get_code_word());
+    err();
     printf("test\n");
     printf("this is the code_word: %s\n", code_word);
 
