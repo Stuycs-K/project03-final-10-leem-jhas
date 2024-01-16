@@ -48,13 +48,15 @@ char* get_code_word(){
 
     //wrote codeword to shared memory
     printf("hi\n");
+    int a;
     char *data3;
     int shmid3;
     shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
     printf("hi\n");
     data3 = shmat(shmid3, 0, 0);
     printf("hi\n");
-    printf("data3 before: %s\n", data3);
+    a = data3;
+    printf("data3 before: %s\n", a);
     printf("hi\n");
     for(int i =0; i<strlen(buff1); i++){
         data3[i] = buff1[i];
