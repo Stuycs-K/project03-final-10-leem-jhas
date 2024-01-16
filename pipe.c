@@ -19,12 +19,12 @@ char *process(char *input){
   if(output != NULL){
     char* curr = output;
     //int i = 0;
-    while(*curr != '\0' || *curr != '\n'){
+    while(*curr != '\0' && *curr != '\n'){
       *curr = '-'; 
       curr++;
       //i++;
     }
-    //*curr = '\0';
+    *curr = '\0';
   }
   return output;
 }
@@ -464,10 +464,10 @@ int multi_client_guess() {
   }
 
   int pos = lseek(r_story, -(*file_size), SEEK_END);
-  if (pos == -1){
+  /*if (pos == -1){
     perror("Error: Cannot lseek file\n");
     exit(1);
-  }
+  }*/
 
   char buffer[256];
   ssize_t bytes = read(r_story, buffer, sizeof(buffer) - 1);
