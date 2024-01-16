@@ -77,7 +77,6 @@ char* get_code_word(){
                                             
                                                 // // printf("Round: %d\n", *data);
                                                 // shmdt(data3); //detach
-    printf("test\n");
     return buff1;
 }
 void add_to_bank(char * new_word){
@@ -115,7 +114,9 @@ int main(int argc, char *argv[]) {
 
     //get code_word from function
     char code_word[50];
+    printf("test\n");
     strcpy(code_word, get_code_word());
+    printf("test\n");
     printf("this is the code_word: %s\n", code_word);
 
     //shared memory for rounds
