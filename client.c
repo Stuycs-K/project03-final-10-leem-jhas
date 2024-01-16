@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
   else if (strcmp(argv[1], "multi_create") == 0) {
     //from_server = multi_client_handshake( &to_server );
     char room_code[256];
-    printf("Room Code: ");
+    printf("Create a Room Code: ");
     fgets(room_code, sizeof(room_code), stdin);
     multi_client_create(room_code);
   }

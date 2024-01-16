@@ -310,7 +310,7 @@ int multi_client_create(char *room_code) {
 
   int w_story = open(room_code, O_CREAT | O_TRUNC, 0644);
   if (w_story == -1){
-    perror("Error: Cannot open file\n");
+    perror("Error: Cannot open room\n");
     exit(1);
   }
 
@@ -327,7 +327,7 @@ int multi_client_create(char *room_code) {
   shmid = shmget(SHMEM, sizeof(int), 0);
   semop(semd, &sb, 1);
     
-  printf("Attempting to open resource...\n");
+  printf("Attempting to open room...\n");
 
   int r_story = open(room_code, O_RDONLY);
   if (r_story == -1){
@@ -350,14 +350,16 @@ int multi_client_create(char *room_code) {
     exit(1);
   }
   buffer[bytes] = '\0';
-  printf("Last line added to the file: %s\n", buffer);
+  //printf("Last line added to the file: %s\n", buffer);
   //if (*file_size == 0)
 
-  printf("Next line to be added to the story: \n");
-  fgets(buffer, sizeof(buffer), stdin);
+  printf("Write a phrase: ");
+  fgets(buffer, sizeof(buffer)-1, stdin);
   //char *code_word = "pineapple";
+  buffer[strlen(buffer)-1] = '\0';
   char modified_word[50];
   strcpy(modified_word,process(buffer));
+  printf("%d\n",strlen(buffer));
 
   *file_size = strlen(buffer);
 
@@ -368,6 +370,18 @@ int multi_client_create(char *room_code) {
     perror("Error: Cannot open file\n");
     exit(1);
   }
+
+  char *size = calloc(10, sizeof(char));
+  sprintf(size, "%d", strlen(buffer));
+
+  /*if (write(w_story, size, 10) == -1){
+    perror("Error: Cannot write to file\n");
+    exit(1);
+  }
+  if (write(w_story, buffer, strlen(buffer)) == -1){
+    perror("Error: Cannot write to file\n");
+    exit(1);
+  }*/
   if (write(w_story, modified_word, strlen(modified_word)) == -1){
     perror("Error: Cannot write to file\n");
     exit(1);
@@ -421,10 +435,9 @@ int multi_client_guess(char *join_code) {
   }
 
   buffer[bytes] = '\0';
-  printf("Current State: %s\n", buffer);
-  if (*file_size == 0)
+  printf("Current State: %s \n", buffer);
 
-  printf("Your Guess: \n");
+  printf("Your Guess: ");
   char guessed[256];
   fgets(guessed,sizeof(guessed),stdin);
 
@@ -449,13 +462,49 @@ int multi_client_guess(char *join_code) {
     exit(1);
   }
 
+  close(w_story);
+
+// testing if code can be found again properly
+  /*r_story = open(join_code, O_RDONLY);
+  if (r_story == -1){
+    perror("This room does not exist\n");
+    exit(1);
+  }
+  //pos = lseek(r_story, 0, SEEK_SET);
+
+  char *num = calloc(10,sizeof(char));
+  int len;
+  bytes = read(r_story, num, 10);
+  if (bytes == -1){
+    perror("Error: Cannot read file\n");
+    exit(1);
+  }
+  sscanf(num, "%d", len);
+  printf("num: %d\n",len);
+
+  pos = lseek(r_story, 10, SEEK_SET);
+
+  char code[256];
+  printf("size of buffer: %d\n",sizeof(buffer));
+  bytes = read(r_story, code, strlen(buffer));
+  if (bytes == -1){
+    perror("Error: Cannot read file\n");
+    exit(1);
+  }
+
+  code[bytes] = '\0';
+  printf("Code word: %s\n", code);
+
+  close(r_story);*/
+/////
+
   sb.sem_op = 1;
   if (semop(semd, &sb, 1) == -1){
     perror("Error: Cannot release semaphore\n");
     exit(1);
   }
 
-  close(w_story);
+  
 
   return 0;
 }
