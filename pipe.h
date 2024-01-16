@@ -60,10 +60,5 @@ union semun {
     unsigned short  *array;   //used for SETALL
     struct seminfo  *__buf;
 };
-struct sembuf {
-    short sem_op;
-    short sem_num;
-    short sem_flag;
-};
 
 #endif
