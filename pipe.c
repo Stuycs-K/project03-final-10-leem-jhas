@@ -244,20 +244,20 @@ int server_connect(int from_client) {
 
   //gets code word from shared memory
   char code_word[50];
-                    // int r_file1 = open("codewordfinal.txt", O_RDONLY , 0);   
-                    // if(r_file1 == -1) err();
-                    // read(r_file1, code_word, 50);
-                    // close(r_file1);
-                    // printf("code word length: %d\n", strlen(code_word));
+  int r_file1 = open("codewordfinal.txt", O_RDONLY , 0);   
+  if(r_file1 == -1) err();
+  read(r_file1, code_word, 50);
+  close(r_file1);
+  printf("code word length: %d\n", strlen(code_word));
 
-  char *data3;
-  int shmid3;
-  shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
-  data3 = shmat(shmid3, 0, 0);
-  for(int i =0; i<strlen(data3); i++){
-      code_word[i] = data3[i];
-  }
-  shmdt(data3); //detach
+  // char *data3;
+  // int shmid3;
+  // shmid3 = shmget(125, sizeof(char*), IPC_CREAT | 0640);
+  // data3 = shmat(shmid3, 0, 0);
+  // for(int i =0; i<strlen(data3); i++){
+  //     code_word[i] = data3[i];
+  // }
+  // shmdt(data3); //detach
 
   printf("server read code_word: %s", code_word);
 
