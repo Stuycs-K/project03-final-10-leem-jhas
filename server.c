@@ -77,7 +77,7 @@ char* get_code_word(){
                                             
                                                 // // printf("Round: %d\n", *data);
                                                 // shmdt(data3); //detach
-
+    printf("test\n");
     return buff1;
 }
 void add_to_bank(char * new_word){
