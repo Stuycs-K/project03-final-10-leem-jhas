@@ -40,7 +40,7 @@ char* get_code_word(){
     int num = (rand() % (total/50));
 
     int r_file1 = open("codewords.txt", O_RDONLY , 0);
-    char buff1[50];
+    char* buff1 = (char*)malloc(50 * sizeof(char)); 
     lseek(r_file1, num*50, SEEK_SET);
     read(r_file1, buff1, sizeof(buff1));
     printf("code: %s\n", buff1);
