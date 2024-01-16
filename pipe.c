@@ -246,7 +246,6 @@ int server_connect(int from_client) {
 
   printf("server read code_word: %s", code_word);
 
-
   int r_file = open("hangman.txt", O_RDONLY , 0);   
   if(r_file == -1) err();
 
@@ -300,10 +299,11 @@ int multi_client_create(char *room_code) {
     exit(1);
   }
 
-  printf("%s",room_code);
   room_code[strlen(room_code)-1] = '\0'; // removing '\n' from filename
+  char filename[50];
+  strcpy(filename, room_code);
   strcat(room_code,".txt");
-  printf("%s",room_code);
+  strcat(filename,"_hidden.txt");
 
   int w_story = open(room_code, O_CREAT | O_TRUNC, 0644);
   if (w_story == -1){
@@ -312,8 +312,6 @@ int multi_client_create(char *room_code) {
   }
 
   close(w_story);
-
-  ///////////////
 
   struct sembuf sb;
   sb.sem_num = 0;
@@ -347,12 +345,9 @@ int multi_client_create(char *room_code) {
     exit(1);
   }
   buffer[bytes] = '\0';
-  //printf("Last line added to the file: %s\n", buffer);
-  //if (*file_size == 0)
 
   printf("Write a phrase: ");
   fgets(buffer, sizeof(buffer)-1, stdin);
-  //char *code_word = "pineapple";
   buffer[strlen(buffer)-1] = '\0';
   char modified_word[50];
   strcpy(modified_word,process(buffer));
@@ -368,17 +363,6 @@ int multi_client_create(char *room_code) {
     exit(1);
   }
 
-  char *size = calloc(10, sizeof(char));
-  sprintf(size, "%d", strlen(buffer));
-
-  /*if (write(w_story, size, 10) == -1){
-    perror("Error: Cannot write to file\n");
-    exit(1);
-  }
-  if (write(w_story, buffer, strlen(buffer)) == -1){
-    perror("Error: Cannot write to file\n");
-    exit(1);
-  }*/
   if (write(w_story, modified_word, strlen(modified_word)) == -1){
     perror("Error: Cannot write to file\n");
     exit(1);
@@ -392,9 +376,21 @@ int multi_client_create(char *room_code) {
 
   close(w_story);
 
+  int code = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (w_story == -1){
+    perror("Error: Cannot open file\n");
+    exit(1);
+  }
+  printf("buufer: %s\n",buffer);
+  if (write(code, buffer, strlen(buffer)) == -1){
+    perror("Error: Cannot write to file\n");
+    exit(1);
+  }
+
   return 0;
 }
 
+int code_len;
 int multi_client_guess(char *join_code) {
   struct sembuf sb;
   sb.sem_num = 0;
@@ -408,8 +404,31 @@ int multi_client_guess(char *join_code) {
   printf("Attempting to join room...\n");
 
   join_code[strlen(join_code)-1] = '\0'; // removing '\n' from filename
+  char filename[50];
+  strcpy(filename, join_code);
   strcat(join_code,".txt");
+  strcat(filename,"_hidden.txt");
 
+
+  //retrieve code first
+  int code = open(filename, O_RDONLY);
+  if (code == -1){
+    perror("This room does not exist\n");
+    exit(1);
+  }
+
+  char hidden[256];
+  ssize_t num = read(code, hidden, sizeof(hidden) - 1);
+  if (num == -1){
+    perror("Error: Cannot read file\n");
+    exit(1);
+  }
+  hidden[num] = '\0';
+  //printf("code: %s\n",hidden);
+  
+  close(code);
+
+  //open file with guesses
   int r_story = open(join_code, O_RDONLY);
   if (r_story == -1){
     perror("This room does not exist\n");
@@ -442,9 +461,9 @@ int multi_client_guess(char *join_code) {
 
   close(r_story);
 
-  char *code_word = "pineapple";
+  //char *code_word = "pineapple";
   char after_guess[50];
-  strcpy(after_guess, check_guess(guessed, code_word, buffer));
+  strcpy(after_guess, check_guess(guessed, hidden, buffer));
 
   //printf("code: %s, guess: %s, prev line: %s, new line: %s\n", code_word, guessed, buffer, after_guess);
   //printf("size of guess: %d\n", strlen(guessed));
@@ -461,47 +480,31 @@ int multi_client_guess(char *join_code) {
 
   close(w_story);
 
-// testing if code can be found again properly
-  /*r_story = open(join_code, O_RDONLY);
-  if (r_story == -1){
-    perror("This room does not exist\n");
-    exit(1);
-  }
-  //pos = lseek(r_story, 0, SEEK_SET);
-
-  char *num = calloc(10,sizeof(char));
-  int len;
-  bytes = read(r_story, num, 10);
-  if (bytes == -1){
-    perror("Error: Cannot read file\n");
-    exit(1);
-  }
-  sscanf(num, "%d", len);
-  printf("num: %d\n",len);
-
-  pos = lseek(r_story, 10, SEEK_SET);
-
-  char code[256];
-  printf("size of buffer: %d\n",sizeof(buffer));
-  bytes = read(r_story, code, strlen(buffer));
-  if (bytes == -1){
-    perror("Error: Cannot read file\n");
-    exit(1);
-  }
-
-  code[bytes] = '\0';
-  printf("Code word: %s\n", code);
-
-  close(r_story);*/
-/////
-
   sb.sem_op = 1;
   if (semop(semd, &sb, 1) == -1){
     perror("Error: Cannot release semaphore\n");
     exit(1);
   }
 
-  
+  if(strcmp(after_guess, hidden) == 0){
+    printf("Congrats! You've guessed the hidden phrase!\n");
+    printf("Closing room...\n");
+    remove(filename);
+    remove(join_code);
+
+    int semd = semget(KEY, 1, 0);
+    int shmid = shmget(SHMEM, sizeof(int), 0);
+
+    if (semctl(semd, IPC_RMID, 0) == -1){
+        perror("Error: Cannot remove semaphore\n");
+        exit(1);
+    }
+
+    if (shmctl(shmid, IPC_RMID, 0) == -1){
+        perror("Error: Cannot remove shared memory\n");
+        exit(1);
+    }
+  }
 
   return 0;
 }

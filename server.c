@@ -94,22 +94,22 @@ void add_to_bank(char * new_word){
 int main(int argc, char *argv[]) {
     signal(SIGINT,sighandler);
     write_random_code_word();
-    // printf("Would you like to play or add a codeword to the bank?[play/add]: \n");
-    // char line_buff[50];
-    // fgets(line_buff, 50, stdin);
+    printf("Would you like to play or add a codeword to the bank?[play/add]: \n");
+    char line_buff[50];
+    fgets(line_buff, 50, stdin);
     
-    // line_buff[strlen(line_buff)-1] = '\0';
+    line_buff[strlen(line_buff)-1] = '\0';
 
-    // if(strcmp(line_buff, "add")==0){
-    //     printf("What word would you like to add?: \n");
-    //     char line_buff1[50];
-    //     fgets(line_buff1, 50, stdin);
-    //     line_buff1[strlen(line_buff1)-1] = '\0';
-    //     printf("adding %s\n", line_buff1);
-    //     add_to_bank(line_buff1);
-    // }
+    if(strcmp(line_buff, "add")==0){
+        printf("What word would you like to add?: \n");
+        char line_buff1[50];
+        fgets(line_buff1, 50, stdin);
+        line_buff1[strlen(line_buff1)-1] = '\0';
+        printf("adding %s\n", line_buff1);
+        add_to_bank(line_buff1);
+    }
   
-    // printf("ONTO THE GAME: WELCOME TO HANGMAN!!\n");
+    printf("ONTO THE GAME: WELCOME TO HANGMAN!!\n");
 
 
     //get code_word from function

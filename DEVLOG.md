@@ -108,4 +108,6 @@ Expanded description including how much time was spent on task.
 - Client (host) can create a game room and choose a word/phrase (to be guessed)
 - Client (player) can join a game room using a join code, and make guesses
     - current state includes the guesses of other clients (players)
-- ~11hrs spent in total
+- Have program send victory message and delete shared memory and files when the phrase
+  is correctly guessed
+- ~14hrs spent in total
