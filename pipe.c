@@ -248,15 +248,9 @@ int server_connect(int from_client) {
   
   char code_word[50] = "pineapple";
   
-  // char *code_word;
   int r_file = open("hangman.txt", O_RDONLY , 0);   
   if(r_file == -1) err();
 
-
-  //char buff[256+1];
-  //buff[50]=0;
-
-  //int bytes;
   char buff[256];
   ssize_t bytes;
 
@@ -275,7 +269,6 @@ int server_connect(int from_client) {
 
   printf("Current:%s \nlength: %lu\n", buff, strlen(buff));
 
-
   //writes back to file 
   int w_file;
 
@@ -287,12 +280,11 @@ int server_connect(int from_client) {
   //writes code word to client
   write(to_client, code_word, strlen(code_word));
 
-
   return to_client;
 }
 
 
-
+/////////// MULTI-CLIENTS
 
 
 int multi_client_create() {
@@ -345,10 +337,7 @@ int multi_client_create() {
   }
 
   int pos = lseek(r_story, -(*file_size), SEEK_END);
-  /*if (pos == -1){
-    perror("Error: Cannot lseek file\n");
-    exit(1);
-  }*/
+
   char buffer[256];
   ssize_t bytes = read(r_story, buffer, sizeof(buffer) - 1);
   if (bytes == -1){
@@ -368,7 +357,6 @@ int multi_client_create() {
   *file_size = strlen(buffer);
 
   close(r_story);
-
 
   w_story = open("story.txt", O_WRONLY | O_APPEND);
   if (w_story == -1){
@@ -416,10 +404,6 @@ int multi_client_guess() {
   }
 
   int pos = lseek(r_story, -(*file_size), SEEK_END);
-  /*if (pos == -1){
-    perror("Error: Cannot lseek file\n");
-    exit(1);
-  }*/
 
   char buffer[256];
   ssize_t bytes = read(r_story, buffer, sizeof(buffer) - 1);
@@ -429,14 +413,12 @@ int multi_client_guess() {
   }
 
   buffer[bytes] = '\0';
-  printf("Last line added to the file: %s\n", buffer);
+  printf("Current State: %s\n", buffer);
   if (*file_size == 0)
 
-  printf("Next line to be added to the story: \n");
-  //char line_buff[256];
+  printf("New Guess: \n");
   char guessed[256];
   fgets(guessed,sizeof(guessed),stdin);
- // char *guessed = line_buff;
 
   *file_size = strlen(buffer);
 
@@ -446,8 +428,8 @@ int multi_client_guess() {
   char after_guess[50];
   strcpy(after_guess, check_guess(guessed, code_word, buffer));
 
-  printf("code: %s, guess: %s, prev line: %s, new line: %s\n", code_word, guessed, buffer, after_guess);
-  printf("size of guess: %d\n", strlen(guessed));
+  //printf("code: %s, guess: %s, prev line: %s, new line: %s\n", code_word, guessed, buffer, after_guess);
+  //printf("size of guess: %d\n", strlen(guessed));
 
   int w_story = open("story.txt", O_WRONLY | O_APPEND);
   if (w_story == -1){
