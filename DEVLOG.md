@@ -42,6 +42,24 @@ Expanded description including how much time was spent on task.
 - client exits after winning - kind of successful?
 - ~2hr spent in total
 
+### 2024-01-11 -  Codewords to file
+- made funciton to add all possible codewords to a file
+- ~45 min spent in total
+
+### 2024-01-12 - Codewords from file
+- started playing with files to see if I could extract a codeword
+- ~45 min spent in total
+
+### 2024-01-14 - Sharedmemory and files for codeword
+- got a random codeword from file
+- added shared memory for codeword
+- fixed victory ending
+- ~2hrs spent in total
+
+### 2024-01-15 - Sharedmemory and files for codeword
+- client can add to wordbank
+- ~45 spent in total
+
 ## Player 2: Mary
 
 ### 2024-01-02 - Brief description
