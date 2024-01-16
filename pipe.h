@@ -54,11 +54,11 @@ int victory(int to_client);
 
 int err();
 
-// union semun {
-//     int val;                  //used for SETVAL
-//     struct semid_ds *buf;     //used for IPC_STAT and IPC_SET
-//     unsigned short  *array;   //used for SETALL
-//     struct seminfo  *__buf;
-// };
+union semun {
+    int val;                  //used for SETVAL
+    struct semid_ds *buf;     //used for IPC_STAT and IPC_SET
+    unsigned short  *array;   //used for SETALL
+    struct seminfo  *__buf;
+};
 
 #endif
